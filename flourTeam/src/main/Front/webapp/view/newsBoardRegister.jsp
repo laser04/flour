@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -24,17 +24,16 @@ button.table, button.image, button.link {
 <body>
 	<div class="mx-auto mt-5 p-4 border"
 		style="width: 945px; box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);">
-		<div class="text-info fw-bolder text-center fs-1">자유 게시판</div>
-		<form action="boardinsert" enctype="multipart/form-data" method="post">
+		<div class="text-success fw-bolder text-center fs-1">뉴스</div>
+		<form action="insertBoard.do" method="post">
 			<div id="check">
 				<div class="mt-3">
-					<div class="fs-5 mb-1">&nbsp;제목</div>
+					<div class="fs-5 mb-1">뉴스</div>
 					<div>
 						<input class="p-1 form-control" id="title" type="text"
-							placeholder="제목을 입력해주세요" name="BOARDTITLE">
+							placeholder="제목을 입력해주세요">
 					</div>
 				</div>
-
 				<div class="d-flex mt-2 justify-content-start">
 					<div style="width: 13%; margin-right: 10px">
 						<div class="fs-5 mb-1">&nbsp;부서</div>
@@ -63,11 +62,10 @@ button.table, button.image, button.link {
 				</div>
 			</div>
 			<div class="mt-2 fs-5 mb-1">
-				<div>&nbsp;내용</div>
+				<div>내용</div>
 				<div id="editor"></div>
-				<div class="mt-2 d-block" id="fileWrap">
-					<input class="mt-2 w-100" type="file" id="file1"
-						style="font-size: 0.6em" name="uploadfile">
+				<div>
+					<input type="hidden" id="contents" name="content">
 				</div>
 			</div>
 			<div class="mt-3 text-center">
@@ -96,7 +94,7 @@ button.table, button.image, button.link {
             //취소 버튼
             var resetBtn = document.getElementById("resetBtn");
             resetBtn.addEventListener("click",()=>{
-                location.href="./board.jsp";
+                location.href="./newsBoard.jsp";
             });
 
             //등록 버튼 - 수정필요
