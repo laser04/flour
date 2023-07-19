@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    
+<mapper namespace="com.flour.FlourProject.board.mapper.BoardMapper">
+
+<!-- dto와 테이블의 항목들 이름 같으면 알아서해줌 
+<resultMap id="myResultMap" type="com.flour.FlourProject.board.dto.BoardDTO">
+	<result column="BOARD_TITLE" property="BOARD_TITLE" />
+	<result column="BOARD_CONTENT" property="BOARD_CONTENT" />
+	<result column="BOARD_REGDATE" property="BOARD_REGDATE" />
+	<result column="BOARD_COUNT" property="BOARD_COUNT" />
+	<result column="BOARD_FILEPATH" property="BOARD_FILEPATH" />
+
+</resultMap> -->
+
+	<!--boardlist  -->
+    <select id="selectBoardList" resultType="com.flour.FlourProject.board.dto.BoardDTO">
+        select a.*,b.USER_NAME from BOARD 
+        as a inner join USER as b on a.USER_ID=b.USER_ID order by BOARD_ID desc 
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- 게시판 전체 행개수  -->
+    <select id="BoardPageCount" resultType="com.flour.FlourProject.board.dto.BoardDTO">
+       select count(*) as boardPageCount  
+       from BOARD as a inner join USER as b 
+       on a.USER_ID=b.USER_ID;
+    </select>
+    <!-- 게시판  검색 제목 전체 행개수  -->
+    <select id="BoardSearchTitlePageCount" resultType="com.flour.FlourProject.board.dto.BoardDTO">
+       select count(*) as boardPageCount  
+       from BOARD as a inner join USER as b 
+       on a.USER_ID=b.USER_ID  where a.BOARD_TITLE like #{searchKeyword};
+    </select>
+     <!-- 게시판  검색 유저 전체 행개수  -->
+    <select id="BoardSearchNamePageCount" resultType="com.flour.FlourProject.board.dto.BoardDTO">
+       select count(*) as boardPageCount  
+       from BOARD as a inner join USER as b 
+       on a.USER_ID=b.USER_ID where b.USER_NAME like #{searchKeyword};
+    </select>
+    <!-- 제목 검색 -->
+    <select id="searchBoardTitle" resultType="com.flour.FlourProject.board.dto.BoardDTO">
+       select a.*,b.USER_NAME from BOARD 
+        as a inner join USER as b on a.USER_ID=b.USER_ID
+        where a.BOARD_TITLE like #{searchKeyword} order by BOARD_ID desc 
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- 작성자 검색 -->
+    <select id="searchUserName" resultType="com.flour.FlourProject.board.dto.BoardDTO">
+        select a.*,b.USER_NAME from BOARD 
+        as a inner join USER as b on a.USER_ID=b.USER_ID
+        where b.USER_NAME like #{searchKeyword} order by BOARD_ID desc 
+        limit #{startRow},#{pageSize}
+    </select>
+    
+    
+</mapper>
