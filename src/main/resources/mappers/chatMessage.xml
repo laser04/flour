@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flour.web.mapper.ChatMessageMapper">
+
+
+    <insert id="save" parameterType="com.flour.web.domain.ChatMessage">
+        INSERT INTO chatmessage
+        VALUES (#{id}, #{chatId}, #{senderId}, #{recipientId}, #{senderName}, #{recipientName}, #{content}, #{timestamp}, #{status})
+    </insert>
+
+    <select id="countBySenderIdAndRecipientIdAndStatus" resultType="long">
+        SELECT count(*) FROM chatmessage
+        WHERE sender_id=#{senderId} AND recipient_id=#{recipientId} AND status=#{status}
+    </select>
+
+    <select id="findByChatId" resultType="com.flour.web.domain.ChatMessage">
+        SELECT
+            id,
+            chat_id as chatId,
+            sender_id as senderId,
+            recipient_id as recipientId,
+            sender_name as senderName,
+            recipient_name recipientName,
+            content,
+            timestamp,
+            status
+            FROM chatmessage WHERE chat_id= #{chatId}
+    </select>
+
+    <select id="findById" resultType="com.flour.web.domain.ChatMessage">
+        SELECT * FROM chatmessage WHERE id=#{id}
+    </select>
+
+    <update id="updateStatuses">
+        UPDATE chatmessage SET status=#{status} WHERE sender_id=#{senderId} AND recipient_id=#{recipientId}
+    </update>
+
+    <select id="findLastMessage" resultType="com.flour.web.domain.ChatMessage">
+        SELECT content FROM chatmessage
+        WHERE sender_id = #{senderId} AND recipient_id = #{recipientId}
+        ORDER BY num DESC LIMIT 1
+    </select>
+</mapper>

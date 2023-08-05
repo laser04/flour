@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+    
+<mapper namespace="com.flour.web.mapper.MyWorkMapper">
+	
+	<!-- mywork전체 첫 화면  로그인한 해당유저관련정보만-->
+	<select id="myWork" resultType="com.flour.web.domain.MyWork">
+		select 
+		a.MYWORK_ID as MYWORKID, a.MYWORK_TASK as MYWORKTASK,
+		a.MYWORK_WORK as MYWORKWORK, a.MYWORK_STATUS as MYWORKSTATUS,
+		a.MYWORK_STARTTIME as MYWORKSTARTTIME, a.MYWORK_ENDTIME as MYWORKENDTIME,	
+		b.USER_NAME as USERNAME,b.USER_POSITION as USERPOSITION,b.USER_IDENNUM as userIdennum,
+		c.DEPARTMENT_ID as DEPARTMENTID, c.DEPARTMENT_NAME as DEPARTMENTNAME
+		from MYWORK as a 
+		inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+		inner join DEPARTMENT as c on b.DEPARTMENT_ID=c.DEPARTMENT_ID 
+		where b.USER_IDENNUM=#{userIdennum}
+		order by MYWORK_STATUS desc, MYWORK_STARTTIME desc
+	</select>
+	<!-- 부 서 팀원전체 정보 -->
+	<select id="teamWork" resultType="com.flour.web.domain.MyWork">
+		select a.MYWORK_ID as MYWORKID, a.MYWORK_TASK as MYWORKTASK,
+		a.MYWORK_WORK as MYWORKWORK, a.MYWORK_STATUS as MYWORKSTATUS,
+		a.MYWORK_STARTTIME as MYWORKSTARTTIME, a.MYWORK_ENDTIME as MYWORKENDTIME, 
+		b.USER_NAME as USERNAME,b.USER_IDENNUM as userIdennum, b.USER_POSITION USERPOSITION,
+		c.DEPARTMENT_ID as DEPARTMENTID, c.DEPARTMENT_NAME as DEPARTMENTNAME
+		from MYWORK as a 
+		inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+		inner join DEPARTMENT as c on b.DEPARTMENT_ID=c.DEPARTMENT_ID
+		where c.DEPARTMENT_ID=#{DEPARTMENTID}
+		order by MYWORK_STARTTIME desc
+	</select>
+	<!-- 부서별 명단  -->
+	<select id="teamWorkUser" resultType="com.flour.web.domain.MyWork">
+		select  
+		a.USER_NAME as USERNAME,a.USER_IDENNUM as userIdennum, a.USER_POSITION as USERPOSITION,
+		b.DEPARTMENT_ID as DEPARTMENTID, b.DEPARTMENT_NAME as DEPARTMENTNAME,
+		c.MYWORK_PROGRESS_VALUE  as MYWORKPROGRESSVALUE
+		from USERS as a
+		inner join DEPARTMENT as b on a.DEPARTMENT_ID=b.DEPARTMENT_ID
+		inner join MYWORK_PROGRESS as c on a.USER_IDENNUM=c.USER_IDENNUM 
+		where b.DEPARTMENT_ID=#{DEPARTMENTID};
+	</select>
+	<!--일정 추가 -->
+	<insert id="myWorkInsert">
+	insert into MYWORK  values(
+	(SELECT MYWORK_ID FROM (SELECT IFNULL(MAX(MYWORK_ID), 0) + 1 AS MYWORK_ID FROM MYWORK) AS MYWORKNUM)
+	,#{MYWORKTASK},#{MYWORKWORK},#{MYWORKSTATUS}
+	,#{MYWORKSTARTTIME},#{MYWORKENDTIME},#{userIdennum})
+	</insert>
+	<!--업무수정 -->
+	<update id="myWorkUpdate">
+	update MYWORK set MYWORK_TASK=#{MYWORKTASK},MYWORK_WORK=#{MYWORKWORK}
+	,MYWORK_STARTTIME=#{MYWORKSTARTTIME},MYWORK_ENDTIME=#{MYWORKENDTIME}
+	 where MYWORK_ID=#{MYWORKID}
+	</update>
+	
+	<!--업무완료  -->
+	<update id="myWorkComplete">
+	update MYWORK set MYWORK_STATUS="완료", MYWORK_ENDTIME=#{MYWORKENDTIME} where MYWORK_ID=#{MYWORKID}
+	</update>
+	
+	<!-- 업무 삭제 -->
+	<delete id="myWorkDelete">
+	delete from MYWORK where MYWORK_ID=#{MYWORKID}
+	</delete>
+	
+	<!-- 기간 만료된(즉 오늘날짜가 MYWORKENDTIME보다 클때)행 정보들 삭제 -->
+	<delete id="deleteExpiredMyWork">
+	delete from MYWORK where MYWORK_ENDTIME &lt; #{today}
+	</delete><!-- & l t 는 < 이거임  -->
+	
+	<!-- 자신의 전체 행개수  -->
+    <select id="myWorkCount" resultType="com.flour.web.domain.MyWork">
+       select count(*) as myWorkCount  from MYWORK as a 
+		inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+		where  b.USER_IDENNUM=#{userIdennum}
+    </select>
+    
+    <!-- 상태가 완료인 행의 수 -->
+	<select id="myWorkCompleteCount" resultType="com.flour.web.domain.MyWork">
+       select count(*) as myWorkCompleteCount  from MYWORK as a 
+		inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+		where  b.USER_IDENNUM=#{userIdennum} and a.MYWORK_STATUS="완료"
+    </select>
+	
+	<!-- 해당유저일때의 MYWORK_PROGRESS테이블 정보  -->
+	<select id="myProgressUser" resultType="com.flour.web.domain.MyWork">
+       select MYWORK_PROGRESS_VALUE as MYWORKPROGRESSVALUE,
+       USER_IDENNUM as userIdennum
+        from MYWORK_PROGRESS where USER_IDENNUM=#{userIdennum};
+    </select>
+    
+    <!-- 해당 유저의 MYWORK_PROGRESS정보가 없는경우 insert -->
+    <insert id="myProgressInsert">
+    insert into	MYWORK_PROGRESS values(#{MYWORKPROGRESSVALUE},#{userIdennum})
+    </insert>
+    
+      <!-- 해당 유저의 MYWORK_PROGRESS정보가 있는경우 update -->
+    <update id="myProgressUpdate">
+    update MYWORK_PROGRESS set MYWORK_PROGRESS_VALUE=#{MYWORKPROGRESSVALUE} 
+    where USER_IDENNUM=#{userIdennum}
+    </update>
+    
+    
+    
+    
+</mapper>

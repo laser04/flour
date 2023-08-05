@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.flour.web.mapper.BoardNewsMapper">
+
+	<!--boardlist  -->
+    <select id="selectBoardNewsList" resultType="com.flour.web.domain.BoardNews">
+        select a.BOARD_NEWS_ID as BOARDNEWSID,a.BOARD_NEWS_TITLE as BOARDNEWSTITLE,
+        a.BOARD_NEWS_CONTENT as BOARDNEWSCONTENT,a.BOARD_NEWS_REGDATE as BOARDNEWSREGDATE,
+        a.BOARD_NEWS_COUNT as BOARDNEWSCOUNT, a.BOARD_NEWS_FILENAME as BOARDNEWSFILENAME,
+        a.BOARD_NEWS_FILEPATH as BOARDNEWSFILEPATH,b.USER_NAME as USERNAME,b.USER_IDENNUM as userIdennum
+        from BOARD_NEWS 
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM order by BOARD_NEWS_REGDATE desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- 게시판 전체 행개수  -->
+    <select id="BoardNewsPageCount" resultType="com.flour.web.domain.BoardNews">
+       select count(*) as boardNewsPageCount  
+       from BOARD_NEWS as a inner join USERS as b 
+       on a.USER_IDENNUM=b.USER_IDENNUM;
+    </select>
+    <!-- 게시판  검색 제목 전체 행개수  -->
+    <select id="BoardNewsSearchTitlePageCount" resultType="com.flour.web.domain.BoardNews">
+       select count(*) as boardNewsPageCount  
+       from BOARD_NEWS as a inner join USERS as b 
+       on a.USER_IDENNUM=b.USER_IDENNUM  where a.BOARD_NEWS_TITLE like #{searchKeyword};
+    </select>
+     <!-- 게시판  검색 유저 전체 행개수  -->
+    <select id="BoardNewsSearchNamePageCount" resultType="com.flour.web.domain.BoardNews">
+       select count(*) as boardNewsPageCount  
+       from BOARD_NEWS as a inner join USERS as b 
+       on a.USER_IDENNUM=b.USER_IDENNUM where b.USER_NAME like #{searchKeyword};
+    </select>
+    <!-- 제목 검색 -->
+    <select id="searchBoardNewsTitle" resultType="com.flour.web.domain.BoardNews">
+       select a.BOARD_NEWS_ID as BOARDNEWSID,a.BOARD_NEWS_TITLE as BOARDNEWSTITLE,
+        a.BOARD_NEWS_CONTENT as BOARDNEWSCONTENT,a.BOARD_NEWS_REGDATE as BOARDNEWSREGDATE,
+        a.BOARD_NEWS_COUNT as BOARDNEWSCOUNT, a.BOARD_NEWS_FILENAME as BOARDNEWSFILENAME,
+        a.BOARD_NEWS_FILEPATH as BOARDNEWSFILEPATH ,
+        b.USER_NAME as USERNAME,b.USER_IDENNUM as userIdennum
+        from BOARD_NEWS
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+        where a.BOARD_NEWS_TITLE like #{searchKeyword} order by BOARD_NEWS_REGDATE desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- 작성자 검색 -->
+    <select id="searchUserName" resultType="com.flour.web.domain.BoardNews">
+        select a.BOARD_NEWS_ID as BOARDNEWSID,a.BOARD_NEWS_TITLE as BOARDNEWSTITLE,
+        a.BOARD_NEWS_CONTENT as BOARDNEWSCONTENT,a.BOARD_NEWS_REGDATE as BOARDNEWSREGDATE,
+        a.BOARD_NEWS_COUNT as BOARDNEWSCOUNT, a.BOARD_NEWS_FILENAME as BOARDNEWSFILENAME,
+        a.BOARD_NEWS_FILEPATH as BOARDNEWSFILEPATH,b.USER_NAME as USERNAME, 
+        b.USER_IDENNUM as userIdennum
+         from BOARD_NEWS
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+        where b.USER_NAME like #{searchKeyword} order by BOARD_NEWS_REGDATE desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- move_boardinsert 기존 회원정보 보내는기능 -->
+    <select id="MoveBoardNewsInsert" resultType="com.flour.web.domain.BoardNews">
+      select a.USER_NAME as USERNAME ,a.USER_ROLE as USERROLE,
+	  b.DEPARTMENT_NAME as DEPARTMENTNAME from USERS as a 
+	  inner join DEPARTMENT as b on a.DEPARTMENT_ID=b.DEPARTMENT_ID 
+	  where a.USER_IDENNUM=#{userIdennum};	
+    </select>
+    
+    <!-- 자유게시판 글쓰기 -->
+    <insert id="BoardNewsInsert" parameterType="com.flour.web.domain.BoardNews">
+    	insert into BOARD_NEWS
+    	(BOARD_NEWS_ID,BOARD_NEWS_TITLE,BOARD_NEWS_CONTENT,BOARD_NEWS_REGDATE,USER_IDENNUM,BOARD_NEWS_FILENAME,BOARD_NEWS_FILEPATH)
+    	values((SELECT BOARD_NEWS_ID FROM (SELECT IFNULL(MAX(BOARD_NEWS_ID), 0) + 1 AS BOARD_NEWS_ID FROM BOARD_NEWS) AS TITLENUM)
+    	,#{BOARDNEWSTITLE},#{BOARDNEWSCONTENT},(SELECT now() ),#{userIdennum},
+    	#{BOARDNEWSFILENAME},#{BOARDNEWSFILEPATH})
+    </insert>
+    
+    <!-- getboard view 정보들 -->
+    <select id="MoveGetBoardNews" resultType="com.flour.web.domain.BoardNews">
+    	select a.BOARD_NEWS_ID as BOARDNEWSID,a.BOARD_NEWS_TITLE as BOARDNEWSTITLE,
+        a.BOARD_NEWS_CONTENT as BOARDNEWSCONTENT,a.BOARD_NEWS_REGDATE as BOARDNEWSREGDATE,
+        a.BOARD_NEWS_COUNT as BOARDNEWSCOUNT, a.BOARD_NEWS_FILENAME as BOARDNEWSFILENAME,
+        a.BOARD_NEWS_FILEPATH as BOARDNEWSFILEPATH 
+        ,b.USER_NAME as USERNAME,b.USER_IDENNUM as userIdennum
+        ,c.DEPARTMENT_NAME as DEPARTMENTNAME from BOARD_NEWS as a 
+    	inner join  USERS as b on a.USER_IDENNUM=b.USER_IDENNUM 
+		inner join DEPARTMENT as c on b.DEPARTMENT_ID=c.DEPARTMENT_ID 
+		where a.BOARD_NEWS_ID=#{BOARDNEWSID};
+    </select>
+    
+    <!-- getboard 댓글정보들 -->
+    <select id="GetBoardNewsAllComment" resultType="com.flour.web.domain.BoardNews">
+    select  BOARD_NEWS_COMMENT_ID as BOARDNEWSCOMMENTID,
+    BOARD_NEWS_COMMENT_USER_ID as BOARDNEWSCOMMENTUSERID,
+    BOARD_NEWS_COMMENT_CONTENT as BOARDNEWSCOMMENTCONTENT,
+    BOARD_NEWS_COMMENT_REGDATE as BOARDNEWSCOMMENTREGDATE,
+    BOARD_NEWS_ID as BOARDNEWSID
+    from BOARD_NEWS_COMMENT  where BOARD_NEWS_ID=#{BOARDNEWSID};
+    </select>
+    
+    <!-- 조회수증가 -->
+    <update  id="BoardNewsCountIncrease">
+    update BOARD_NEWS set BOARD_NEWS_COUNT=BOARD_NEWS_COUNT+1 where BOARD_NEWS_ID=#{BOARDNEWSID}
+    </update>
+    
+    <!--게시글 삭제	-->   
+    <delete id="BoardNewsDelete">
+    delete from BOARD_NEWS where BOARD_NEWS_ID=#{BOARDNEWSID}
+    </delete>
+    <!-- 게시글삭제시 해당게시글댓글삭제 -->
+	<delete id="BoardNewsAllCommentDelete">
+    delete from BOARD_NEWS_COMMENT where BOARD_NEWS_ID=#{BOARDNEWSID}
+    </delete>
+	<!--게시글 수정 -->
+	<update id="BoardNewsUpdate">
+	update BOARD_NEWS set BOARD_NEWS_TITLE=#{BOARDNEWSTITLE},BOARD_NEWS_CONTENT=#{BOARDNEWSCONTENT}
+	,BOARD_NEWS_FILENAME=#{BOARDNEWSFILENAME},BOARD_NEWS_FILEPATH=#{BOARDNEWSFILEPATH}
+	 where BOARD_NEWS_ID=#{BOARDNEWSID}
+	</update>
+	<!--파일 삭제-->
+	<update id="FileDelete">
+	update BOARD_NEWS set 
+	BOARD_NEWS_FILENAME=null, BOARD_NEWS_FILEPATH=null
+	 where BOARD_NEWS_ID=#{BOARDNEWSID}
+	</update>
+	<!--게시글 댓글 추가  -->
+	<insert id="BoardNewsCommentInsert">
+	insert into BOARD_NEWS_COMMENT(BOARD_NEWS_COMMENT_ID,BOARD_NEWS_COMMENT_USER_ID
+	,BOARD_NEWS_COMMENT_CONTENT,BOARD_NEWS_COMMENT_REGDATE,BOARD_NEWS_ID ) 
+	values ((SELECT BOARD_NEWS_COMMENT_ID FROM (SELECT IFNULL(MAX(BOARD_NEWS_COMMENT_ID), 0) + 1 AS BOARD_NEWS_COMMENT_ID FROM BOARD_NEWS_COMMENT) AS COMMENTNUM)
+		,#{BOARDNEWSCOMMENTUSERID},#{BOARDNEWSCOMMENTCONTENT},(SELECT now()),#{BOARDNEWSID})
+	</insert>
+	<!--게시글 댓글 수정  -->
+	<update id="BoardNewsCommentUpdate">
+	update BOARD_NEWS_COMMENT set
+	BOARD_NEWS_COMMENT_CONTENT=#{BOARDNEWSCOMMENTCONTENT}
+	where BOARD_NEWS_COMMENT_ID=#{BOARDNEWSCOMMENTID}
+	</update>
+
+	<!--게시글 개별 댓글 삭제  -->
+	<delete id="BoardNewsCommentDelete">
+	delete from BOARD_NEWS_COMMENT where BOARD_NEWS_COMMENT_ID=#{BOARDNEWSCOMMENTID}
+	</delete>
+	
+	<!--공지 인덱스 정보  -->
+    <select id="indexBoardNews" resultType="com.flour.web.domain.BoardNews">
+        select  a.BOARD_NEWS_ID as BOARDNEWSID,a.BOARD_NEWS_TITLE as BOARDNEWSTITLE,
+        a.BOARD_NEWS_CONTENT as BOARDNEWSCONTENT,a.BOARD_NEWS_REGDATE as BOARDNEWSREGDATE,
+        a.BOARD_NEWS_COUNT as BOARDNEWSCOUNT, a.BOARD_NEWS_FILENAME as BOARDNEWSFILENAME,
+        a.BOARD_NEWS_FILEPATH as BOARDNEWSFILEPATH ,b.USER_NAME as USERNAME 
+        ,b.USER_IDENNUM as userIdennum 
+        from BOARD_NEWS 
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM order by BOARD_NEWS_REGDATE desc
+        limit 0,4
+    </select>
+	
+	
+
+</mapper>

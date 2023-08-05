@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.flour.web.mapper.BoardMapper">
+
+    <!--boardlist  -->
+    <select id="selectBoardList" resultType="com.flour.web.domain.Board">
+        select a.BOARD_ID as boardId, a.BOARD_TITLE as boardTitle, a.BOARD_CONTENT as boardContent
+             ,a.BOARD_REGDATE as boardRegdate , a.BOARD_COUNT as boardCount
+             ,a.BOARD_FILENAME as boardFileName, a.BOARD_FILEPATH as boardFilePath,
+            a.USER_IDENNUM as userIdennum,b.USER_NAME as userName from BOARD
+                                                               as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM order by BOARD_REGDATE desc
+            limit #{startRow},#{pageSize}
+    </select>
+    <!-- 게시판 전체 행개수  -->
+    <select id="BoardPageCount" resultType="int">
+        select count(*) as boardPageCount
+        from BOARD as a
+                 inner join USERS as b
+                            on a.USER_IDENNUM = b.USER_IDENNUM;
+    </select>
+    <!-- 게시판  검색 제목 전체 행개수  -->
+    <select id="BoardSearchTitlePageCount" resultType="com.flour.web.domain.Board">
+        select count(*) as boardPageCount
+        from BOARD as a
+                 inner join USERS as b
+                            on a.USER_IDENNUM = b.USER_IDENNUM
+        where a.BOARD_TITLE like #{searchKeyword};
+    </select>
+    <!-- 게시판  검색 유저 전체 행개수  -->
+    <select id="BoardSearchNamePageCount" resultType="com.flour.web.domain.Board">
+        select count(*) as boardPageCount
+        from BOARD as a
+                 inner join USERS as b
+                            on a.USER_IDENNUM = b.USER_IDENNUM
+        where b.USER_NAME like #{searchKeyword};
+    </select>
+    <!-- 제목 검색 -->
+    <select id="searchBoardTitle" resultType="com.flour.web.domain.Board">
+        select a.BOARD_ID as boardId, a.BOARD_TITLE as boardTitle, a.BOARD_CONTENT as boardContent
+             ,a.BOARD_REGDATE as boardRegdate , a.BOARD_COUNT as boardCount
+             ,a.BOARD_FILENAME as boardFileName, a.BOARD_FILEPATH as boardFilePath,
+            a.USER_IDENNUM as userIdennum, b.USER_NAME as userName
+        from BOARD as a
+                 inner join USERS as b on a.USER_IDENNUM = b.USER_IDENNUM
+        where a.BOARD_TITLE like #{searchKeyword}
+        order by BOARD_REGDATE desc
+            limit #{startRow}, #{pageSize}
+    </select>
+    <!-- 작성자 검색 -->
+    <select id="searchUserName" resultType="com.flour.web.domain.Board">
+        select  a.BOARD_ID as boardId, a.BOARD_TITLE as boardTitle, a.BOARD_CONTENT as boardContent
+             ,a.BOARD_REGDATE as boardRegdate , a.BOARD_COUNT as boardCount
+             ,a.BOARD_FILENAME as boardFileName, a.BOARD_FILEPATH as boardFilePath,
+            a.USER_IDENNUM as userIdennum, b.USER_NAME as userName
+        from BOARD as a inner join USERS as b on a.USER_IDENNUM = b.USER_IDENNUM
+        where b.USER_NAME like #{searchKeyword}
+        order by BOARD_REGDATE desc
+            limit #{startRow}, #{pageSize}
+    </select>
+    <!-- move_boardinsert 기존 회원정보 보내는기능 -->
+    <select id="moveBoardInsert" resultType="com.flour.web.domain.Board">
+        select a.USER_NAME as userName, a.USER_ROLE as userRole, b.DEPARTMENT_NAME as departmentName
+        from USERS as a
+                 inner join DEPARTMENT as b on a.DEPARTMENT_ID = b.DEPARTMENT_ID
+        where a.USER_IDENNUM = #{userIdennum};
+    </select>
+
+    <!-- 자유게시판 글쓰기 -->
+    <insert id="BoardInsert" parameterType="com.flour.web.domain.Board">
+        insert into BOARD
+        (BOARD_ID, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE, USER_IDENNUM, BOARD_FILENAME, BOARD_FILEPATH)
+        values ((SELECT BOARD_ID FROM (SELECT IFNULL(MAX(BOARD_ID), 0) + 1 AS BOARD_ID FROM BOARD) AS TITLENUM)
+                   , #{boardTitle}, #{boardContent}, (SELECT now()), #{userIdennum},
+                #{boardFileName}, #{boardFilePath})
+    </insert>
+
+    <!-- getboard view 정보들 -->
+    <select id="MoveGetBoard" resultType="com.flour.web.domain.Board">
+        select a.BOARD_ID as boardId, a.BOARD_TITLE as boardTitle, a.BOARD_CONTENT as boardContent
+             ,a.BOARD_REGDATE as boardRegdate , a.BOARD_COUNT as boardCount
+             ,a.BOARD_FILENAME as boardFileName, a.BOARD_FILEPATH as boardFilePath,
+            a.USER_IDENNUM as userIdennum, b.USER_NAME as userName
+            , b.USER_IDENNUM as userIdennum, c.DEPARTMENT_NAME as departmentName
+        from BOARD as a
+                 inner join USERS as b on a.USER_IDENNUM = b.USER_IDENNUM
+                 inner join DEPARTMENT as c on b.DEPARTMENT_ID = c.DEPARTMENT_ID
+        where a.BOARD_ID = #{boardId};
+    </select>
+
+    <!-- getboard 댓글정보들 -->
+    <select id="GetBoardAllComment" resultType="com.flour.web.domain.Board">
+        select BOARD_COMMENT_ID as boardCommentId
+        ,BOARD_COMMENT_USER_ID as boardCommentUserIdennum
+        ,BOARD_COMMENT_CONTENT as boardCommentContent
+        ,BOARD_COMMENT_REGDATE as boardCommentRegdate
+        ,BOARD_ID as boardId
+        from BOARD_COMMENT
+        where BOARD_ID = #{boardId};
+    </select>
+
+    <!-- 조회수증가 -->
+    <update id="BoardCountIncrease">
+        update BOARD
+        set BOARD_COUNT=BOARD_COUNT + 1
+        where BOARD_ID = #{boardId}
+    </update>
+
+    <!--게시글 삭제	-->
+    <delete id="BoardDelete">
+        delete
+        from BOARD
+        where BOARD_ID = #{boardId}
+    </delete>
+    <!-- 게시글삭제시 해당게시글댓글삭제 -->
+    <delete id="BoardAllCommentDelete">
+        delete
+        from BOARD_COMMENT
+        where BOARD_ID = #{boardId}
+    </delete>
+    <!--게시글 수정 -->
+    <update id="BoardUpdate">
+        update BOARD
+        set BOARD_TITLE=#{boardTitle}
+          , BOARD_CONTENT=#{boardContent}
+          , BOARD_FILENAME=#{boardFileName}
+          , BOARD_FILEPATH=#{boardFilePath}
+        where BOARD_ID = #{boardId}
+    </update>
+    <!--파일 삭제-->
+    <update id="FileDelete">
+        update BOARD
+        set BOARD_FILENAME=null,
+            BOARD_FILEPATH=null
+        where BOARD_ID = #{boardId}
+    </update>
+    <!--게시글 댓글 추가  -->
+    <insert id="BoardCommentInsert">
+        insert into BOARD_COMMENT( BOARD_COMMENT_ID, BOARD_COMMENT_USER_ID
+                                 , BOARD_COMMENT_CONTENT, BOARD_COMMENT_REGDATE, BOARD_ID)
+        values ( (SELECT BOARD_COMMENT_ID
+                  FROM (SELECT IFNULL(MAX(BOARD_COMMENT_ID), 0) + 1 AS BOARD_COMMENT_ID
+                        FROM BOARD_COMMENT) AS COMMENTNUM)
+               , #{boardCommentUserIdennum}, #{content}, (SELECT now()), #{boardId})
+    </insert>
+    <!--게시글 댓글 수정  -->
+    <update id="BoardCommentUpdate">
+        update BOARD_COMMENT
+        set BOARD_COMMENT_CONTENT=#{content}
+        where BOARD_COMMENT_ID = #{boardCommentId}
+    </update>
+
+    <!--게시글 개별 댓글 삭제  -->
+    <delete id="BoardCommentDelete">
+        delete
+        from BOARD_COMMENT
+        where BOARD_COMMENT_ID = #{boardCommentId}
+    </delete>
+
+</mapper>

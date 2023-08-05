@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flour.web.mapper.CommuteMapper">
+
+    <select id="checkUserWorkStatus" resultType="boolean">
+        select count(*) from commute where CHECK_DATE = date(now()) and user_idennum = #{userIdennum} and status IN ("WORKON", "WORKOFF");
+    </select>
+    <select id="checkUserWorkOut" resultType="boolean">
+        select count(*) from commute where CHECK_DATE = date(now()) and user_idennum = #{userIdennum} and status = #{status};
+    </select>
+    <insert id="inputUserCheckIn" parameterType="com.flour.web.domain.Commute">
+        insert into commute values(#{userIdennum}, date(now()), now(), null, #{status});
+    </insert>
+    <update id="inputUserCheckOff" parameterType="com.flour.web.domain.Commute">
+        UPDATE commute
+        SET check_out_time = NOW(),
+            status = #{status}
+        WHERE user_idennum = #{userIdennum} AND check_DATE = CURDATE() AND status = 'workon';
+    </update>
+
+    <select id="commuteListAll" resultType="com.flour.web.domain.Commute">
+        SELECT
+            users.user_idennum AS userIdennum,
+            users.user_name AS userName,
+            commute.check_date AS checkDate,
+            commute.check_in_time AS checkInTime,
+            commute.check_out_time AS checkOutTime
+        FROM
+            commute
+                INNER JOIN users ON users.user_idennum = commute.user_idennum
+        WHERE
+                    users.user_idennum = #{userIdennum}
+                AND YEAR(commute.check_date) = #{selectedYear}
+          AND MONTH(commute.check_date) = #{selectedMonth}
+        ORDER BY
+            commute.check_date DESC;
+    </select>
+
+</mapper>
+

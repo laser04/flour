@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.flour.web.mapper.BoardNoticeMapper">
+
+	<!--boardlist  -->
+    <select id="selectBoardNoticeList" resultType="com.flour.web.domain.BoardNotice">
+        select a.BOARD_NOTICE_ID as BOARDNOTICEID, a.BOARD_NOTICE_TITLE as BOARDNOTICETITLE,
+        a.BOARD_NOTICE_CONTENT as BOARDNOTICECONTENT, a.BOARD_NOTICE_REGDATE as BOARDNOTICEREGDATE,
+        a.BOARD_NOTICE_COUNT as BOARDNOTICECOUNT, a.BOARD_NOTICE_FILENAME as BOARDNOTICEFILENAME,
+		a.BOARD_NOTICE_FILEPATH as BOARDNOTICEFILEPATH ,
+		b.USER_NAME as USERNAME, b.USER_IDENNUM as userIdennum 
+        from board_notice
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM order by BOARD_NOTICE_REGDATE desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- 게시판 전체 행개수  -->
+    <select id="BoardNoticePageCount" resultType="com.flour.web.domain.BoardNotice">
+       select count(*) as boardNoticePageCount  
+       from BOARD_NOTICE as a inner join USERS as b 
+       on a.USER_IDENNUM=b.USER_IDENNUM;
+    </select>
+    <!-- 게시판  검색 제목 전체 행개수  -->
+    <select id="BoardNoticeSearchTitlePageCount" resultType="com.flour.web.domain.BoardNotice">
+       select count(*) as boardNoticePageCount  
+       from BOARD_NOTICE as a inner join USERS as b 
+       on a.USER_IDENNUM=b.USER_IDENNUM  where a.BOARD_NOTICE_TITLE like #{searchKeyword};
+    </select>
+     <!-- 게시판  검색 유저 전체 행개수  -->
+    <select id="BoardNoticeSearchNamePageCount" resultType="com.flour.web.domain.BoardNotice">
+       select count(*) as boardNoticePageCount  
+       from BOARD_NOTICE as a inner join USERS as b 
+       on a.USER_IDENNUM=b.USER_IDENNUM where b.USER_NAME like #{searchKeyword};
+    </select>
+    <!-- 제목 검색 -->
+    <select id="searchBoardNoticeTitle" resultType="com.flour.web.domain.BoardNotice">
+       select a.BOARD_NOTICE_ID as BOARDNOTICEID, a.BOARD_NOTICE_TITLE as BOARDNOTICETITLE,
+        a.BOARD_NOTICE_CONTENT as BOARDNOTICECONTENT, a.BOARD_NOTICE_REGDATE as BOARDNOTICEREGDATE,
+        a.BOARD_NOTICE_COUNT as BOARDNOTICECOUNT, a.BOARD_NOTICE_FILENAME as BOARDNOTICEFILENAME,
+		a.BOARD_NOTICE_FILEPATH as BOARDNOTICEFILEPATH ,b.USER_NAME as USERNAME,
+        b.USER_IDENNUM as userIdennum
+        from BOARD_NOTICE
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+        where a.BOARD_NOTICE_TITLE like #{searchKeyword} order by BOARD_NOTICE_REGDATE desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- 작성자 검색 -->
+    <select id="searchUserName" resultType="com.flour.web.domain.BoardNotice">
+        select a.BOARD_NOTICE_ID as BOARDNOTICEID, a.BOARD_NOTICE_TITLE as BOARDNOTICETITLE,
+        a.BOARD_NOTICE_CONTENT as BOARDNOTICECONTENT, a.BOARD_NOTICE_REGDATE as BOARDNOTICEREGDATE,
+        a.BOARD_NOTICE_COUNT as BOARDNOTICECOUNT, a.BOARD_NOTICE_FILENAME as BOARDNOTICEFILENAME,
+		a.BOARD_NOTICE_FILEPATH as BOARDNOTICEFILEPATH ,b.USER_NAME as USERNAME,
+        b.USER_IDENNUM as userIdennum 
+        from BOARD_NOTICE
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM
+        where b.USER_NAME like #{searchKeyword} order by BOARD_NOTICE_REGDATE desc
+        limit #{startRow},#{pageSize}
+    </select>
+    <!-- move_boardinsert 기존 회원정보 보내는기능 -->
+    <select id="MoveBoardNoticeInsert" resultType="com.flour.web.domain.BoardNotice">
+      select a.USER_NAME as USERNAME, a.USER_ROLE as USERROLE, 
+      b.DEPARTMENT_NAME as DEPARTMENTNAME from USERS as a 
+	  inner join DEPARTMENT as b on a.DEPARTMENT_ID=b.DEPARTMENT_ID 
+	  where a.USER_IDENNUM=#{userIdennum};	
+    </select>
+    
+    <!-- 자유게시판 글쓰기 -->
+    <insert id="BoardNoticeInsert" parameterType="com.flour.web.domain.BoardNotice">
+    	insert into BOARD_NOTICE
+    	(BOARD_NOTICE_ID,BOARD_NOTICE_TITLE,BOARD_NOTICE_CONTENT,BOARD_NOTICE_REGDATE,USER_IDENNUM,BOARD_NOTICE_FILENAME,BOARD_NOTICE_FILEPATH)
+    	values((SELECT BOARD_NOTICE_ID FROM (SELECT IFNULL(MAX(BOARD_NOTICE_ID), 0) + 1 AS BOARD_NOTICE_ID FROM BOARD_NOTICE) AS TITLENUM)
+    	,#{BOARDNOTICETITLE},#{BOARDNOTICECONTENT},(SELECT now() ),#{userIdennum},
+    	#{BOARDNOTICEFILENAME},#{BOARDNOTICEFILEPATH})
+    </insert>
+    
+    <!-- getboard view 정보들 -->
+    <select id="MoveGetBoardNotice" resultType="com.flour.web.domain.BoardNotice">
+    	select a.BOARD_NOTICE_ID as BOARDNOTICEID, a.BOARD_NOTICE_TITLE as BOARDNOTICETITLE,
+        a.BOARD_NOTICE_CONTENT as BOARDNOTICECONTENT, a.BOARD_NOTICE_REGDATE as BOARDNOTICEREGDATE,
+        a.BOARD_NOTICE_COUNT as BOARDNOTICECOUNT, a.BOARD_NOTICE_FILENAME as BOARDNOTICEFILENAME,
+		a.BOARD_NOTICE_FILEPATH as BOARDNOTICEFILEPATH ,b.USER_NAME as USERNAME,
+		b.USER_IDENNUM as userIdennum,c.DEPARTMENT_NAME as DEPARTMENTNAME
+    	from BOARD_NOTICE as a 
+    	inner join  USERS as b on a.USER_IDENNUM=b.USER_IDENNUM 
+		inner join DEPARTMENT as c on b.DEPARTMENT_ID=c.DEPARTMENT_ID 
+		where a.BOARD_NOTICE_ID=#{BOARDNOTICEID};
+    </select>
+    
+    <!-- getboard 댓글정보들 -->
+    <select id="GetBoardNoticeAllComment" resultType="com.flour.web.domain.BoardNotice">
+    select BOARD_NOTICE_COMMENT_ID as BOARDNOTICECOMMENTID, BOARD_NOTICE_COMMENT_USER_ID as BOARDNOTICECOMMENTUSERID,
+    BOARD_NOTICE_COMMENT_CONTENT as BOARDNOTICECOMMENTCONTENT, 
+    BOARD_NOTICE_COMMENT_REGDATE as BOARDNOTICECOMMENTREGDATE,
+    BOARD_NOTICE_ID as BOARDNOTICEID
+    from BOARD_NOTICE_COMMENT  where BOARD_NOTICE_ID=#{BOARDNOTICEID};
+    </select>
+    
+    <!-- 조회수증가 -->
+    <update  id="BoardNoticeCountIncrease">
+    update BOARD_NOTICE set BOARD_NOTICE_COUNT=BOARD_NOTICE_COUNT+1 where BOARD_NOTICE_ID=#{BOARDNOTICEID}
+    </update>
+    
+    <!--게시글 삭제	-->   
+    <delete id="BoardNoticeDelete">
+    delete from BOARD_NOTICE where BOARD_NOTICE_ID=#{BOARDNOTICEID}
+    </delete>
+    <!-- 게시글삭제시 해당게시글댓글삭제 -->
+	<delete id="BoardNoticeAllCommentDelete">
+    delete from BOARD_NOTICE_COMMENT where BOARD_NOTICE_ID=#{BOARDNOTICEID}
+    </delete>
+	<!--게시글 수정 -->
+	<update id="BoardNoticeUpdate">
+	update BOARD_NOTICE set BOARD_NOTICE_TITLE=#{BOARDNOTICETITLE},BOARD_NOTICE_CONTENT=#{BOARDNOTICECONTENT}
+	,BOARD_NOTICE_FILENAME=#{BOARDNOTICEFILENAME},BOARD_NOTICE_FILEPATH=#{BOARDNOTICEFILEPATH}
+	 where BOARD_NOTICE_ID=#{BOARDNOTICEID}
+	</update>
+	<!--파일 삭제-->
+	<update id="FileDelete">
+	update BOARD_NOTICE set 
+	BOARD_NOTICE_FILENAME=null,BOARD_NOTICE_FILEPATH=null
+	 where BOARD_NOTICE_ID=#{BOARDNOTICEID}
+	</update>
+	<!--게시글 댓글 추가  -->
+	<insert id="BoardNoticeCommentInsert">
+	insert into BOARD_NOTICE_COMMENT(BOARD_NOTICE_COMMENT_ID,BOARD_NOTICE_COMMENT_USER_ID
+	,BOARD_NOTICE_COMMENT_CONTENT,BOARD_NOTICE_COMMENT_REGDATE,BOARD_NOTICE_ID ) 
+	values ((SELECT BOARD_NOTICE_COMMENT_ID FROM (SELECT IFNULL(MAX(BOARD_NOTICE_COMMENT_ID), 0) + 1 AS BOARD_NOTICE_COMMENT_ID FROM BOARD_NOTICE_COMMENT) AS COMMENTNUM)
+		,#{BOARDNOTICECOMMENTUSERID},#{BOARDNOTICECOMMENTCONTENT},(SELECT now()),#{BOARDNOTICEID})
+	</insert>
+	<!--게시글 댓글 수정  -->
+	<update id="BoardNoticeCommentUpdate">
+	update BOARD_NOTICE_COMMENT set
+	BOARD_NOTICE_COMMENT_CONTENT=#{BOARDNOTICECOMMENTCONTENT}
+	where BOARD_NOTICE_COMMENT_ID=#{BOARDNOTICECOMMENTID}
+	</update>
+
+	<!--게시글 개별 댓글 삭제  -->
+	<delete id="BoardNoticeCommentDelete">
+	delete from BOARD_NOTICE_COMMENT where BOARD_NOTICE_COMMENT_ID=#{BOARDNOTICECOMMENTID}
+	</delete>
+	
+	
+	<!--인덱스 정보 -->
+    <select id="indexBoardNotice" resultType="com.flour.web.domain.BoardNotice">
+        select a.BOARD_NOTICE_ID as BOARDNOTICEID, a.BOARD_NOTICE_TITLE as BOARDNOTICETITLE,
+        a.BOARD_NOTICE_CONTENT as BOARDNOTICECONTENT, a.BOARD_NOTICE_REGDATE as BOARDNOTICEREGDATE,
+        a.BOARD_NOTICE_COUNT as BOARDNOTICECOUNT, a.BOARD_NOTICE_FILENAME as BOARDNOTICEFILENAME,
+		a.BOARD_NOTICE_FILEPATH as BOARDNOTICEFILEPATH ,b.USER_NAME as USERNAME,
+        b.USER_IDENNUM as userIdennum 
+        from BOARD_NOTICE 
+        as a inner join USERS as b on a.USER_IDENNUM=b.USER_IDENNUM order by BOARD_NOTICE_REGDATE desc
+        limit 0,4
+    </select>
+
+</mapper>

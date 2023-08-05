@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flour.web.mapper.ChatRoomMapper">
+
+    <resultMap id="ChatRoomMap" type="com.flour.web.domain.ChatRoom">
+        <id property="chatId" column="chat_id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="recipientId" column="recipient_id"/>
+    </resultMap>
+
+    <select id="findBySenderIdAndRecipientId" resultMap="ChatRoomMap">
+        SELECT * FROM chatroom
+        WHERE sender_id = #{senderId} AND recipient_id = #{recipientId}
+            LIMIT 1
+    </select>
+
+    <insert id="save" parameterType="com.flour.web.domain.ChatRoom">
+        INSERT INTO chatroom (id, chat_id, sender_id, recipient_id)
+        VALUES (#{id}, #{chatId}, #{senderId}, #{recipientId})
+    </insert>
+</mapper>
