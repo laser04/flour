@@ -254,7 +254,8 @@
                                     <div class="col-4">
                                        ${teamwork.MYWORKTASK}
                                        <br> <span class="btn border-0 text-primary"
-                                          data-bs-toggle="modal" data-bs-target="#doitModal">
+                                          data-bs-toggle="modal" data-bs-target="#doitModal"
+                                                  data-myworkwork="${teamwork.MYWORKWORK}">
                                           할 일 상세 보기</span>
                                     </div>
                                     <div class="col-3">${teamwork.MYWORKSTARTTIME}</div>

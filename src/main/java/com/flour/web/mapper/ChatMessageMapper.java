@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface ChatMessageMapper {
     void save(ChatMessage chatMessage);
-    long countBySenderIdAndRecipientIdAndStatus(String senderId, String recipientId, MessageStatus status);
+    long countBySenderIdAndRecipientIdAndStatus(String senderId, String recipientId, MessageStatus statusMessage);
     List<ChatMessage> findByChatId(String chatId);
     ChatMessage findById(String id);
-    void updateStatuses(String senderId, String recipientId, MessageStatus status);
+    void updateStatuses(String senderId, String recipientId, MessageStatus statusMessage);
     String findLastMessage(String senderId, String recipientId);
 }

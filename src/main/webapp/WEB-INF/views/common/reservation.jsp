@@ -644,8 +644,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	//입력한사람만 일정 수정가능하게해주는 이벤트(location에 userid저장)
 	calendar.on('clickEvent', (eventData)=>{
 
- 	 if(eventData.event.location == ${id}
- 	 || ${role}=="ADMIN"){
+ 	 if(eventData.event.location == "${id}"
+ 	 || "${role}"=="ADMIN"){
+		 console.log(eventData.event.location)
   		options.useDetailPopup = true;
   	}else{
    	options.useDetailPopup = false;

@@ -6,12 +6,12 @@
 
     <insert id="save" parameterType="com.flour.web.domain.ChatMessage">
         INSERT INTO chatmessage
-        VALUES (#{id}, #{chatId}, #{senderId}, #{recipientId}, #{senderName}, #{recipientName}, #{content}, #{timestamp}, #{status})
+        VALUES (#{id}, #{chatId}, #{senderId}, #{recipientId}, #{senderName}, #{recipientName}, #{content}, #{timestamp}, #{statusMessage})
     </insert>
 
     <select id="countBySenderIdAndRecipientIdAndStatus" resultType="long">
         SELECT count(*) FROM chatmessage
-        WHERE sender_id=#{senderId} AND recipient_id=#{recipientId} AND status=#{status}
+        WHERE sender_id=#{senderId} AND recipient_id=#{recipientId} AND statusMessage=#{statusMessage}
     </select>
 
     <select id="findByChatId" resultType="com.flour.web.domain.ChatMessage">
@@ -21,19 +21,19 @@
             sender_id as senderId,
             recipient_id as recipientId,
             sender_name as senderName,
-            recipient_name recipientName,
+            recipient_name as recipientName,
             content,
             timestamp,
-            status
+            statusMessage
             FROM chatmessage WHERE chat_id= #{chatId}
     </select>
 
     <select id="findById" resultType="com.flour.web.domain.ChatMessage">
-        SELECT * FROM chatmessage WHERE id=#{id}
+        SELECT * FROM chatMessage WHERE id=#{id}
     </select>
 
     <update id="updateStatuses">
-        UPDATE chatmessage SET status=#{status} WHERE sender_id=#{senderId} AND recipient_id=#{recipientId}
+        UPDATE chatmessage SET statusMessage=#{statusMessage} WHERE sender_id=#{senderId} AND recipient_id=#{recipientId}
     </update>
 
     <select id="findLastMessage" resultType="com.flour.web.domain.ChatMessage">

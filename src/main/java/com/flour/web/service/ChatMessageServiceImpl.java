@@ -20,7 +20,7 @@ public class ChatMessageServiceImpl {
 
     public ChatMessage newMessage(ChatMessage chatMessage) {
         chatMessage.setId(generateRandomMessageId());
-        chatMessage.setStatus(MessageStatus.RECEIVED);
+        chatMessage.setStatusMessage(MessageStatus.RECEIVED);
         chatMessageMapper.save(chatMessage);
         return chatMessage;
     }
@@ -54,7 +54,7 @@ public class ChatMessageServiceImpl {
         ChatMessage chatMessage = chatMessageMapper.findById(id);
         System.out.println(chatMessage);
         if (chatMessage != null) {
-            chatMessage.setStatus(MessageStatus.DELIVERED);
+            chatMessage.setStatusMessage(MessageStatus.DELIVERED);
             chatMessageMapper.updateStatuses(chatMessage.getSenderId(), chatMessage.getRecipientId(), MessageStatus.DELIVERED);
             return chatMessage;
         } else {
