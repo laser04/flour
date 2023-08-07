@@ -176,8 +176,8 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
         
             //수정 버튼 클릭 시 이벤트
             function BoardNoticeUpdate(){
-            if("${boardNotice.userIdennum}"==="${id}"
-            ||  "${role}"==="ADMIN")//관리자경우도넣음
+            if("${boardNotice.userIdennum}"=="${id}"
+            ||  "${role}"=="ADMIN")//관리자경우도넣음
             {
                 $(".normalCase").attr("style","display:none");
                 $(".updateCase").attr("style","display:block");
@@ -206,8 +206,8 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
           // 게시판 삭제 버튼 클릭시 기능
        function boardnoticedelete() {
          // 확인 메시지를 표시하고 사용자가 확인을 누르면 삭제 동작 실행
-          if("${boardNotice.userIdennum}"==="${id}"
-            ||  "${role}"==="ADMIN")//관리자경우도넣음
+          if("${boardNotice.userIdennum}"=="${id}"
+            ||  "${role}"=="ADMIN")//관리자경우도넣음
             
            {
                if (confirm("게시물을 삭제하시겠습니까?")) {
@@ -227,8 +227,8 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
             
             //파일삭제 버튼클릭시
             function FileDelete() {
-            	 if("${boardNotice.userIdennum}"==="${id}"
-                 ||  "${role}"==="ADMIN")//관리자경우도넣음
+            	 if("${boardNotice.userIdennum}"=="${id}"
+                 ||  "${role}"=="ADMIN")//관리자경우도넣음
                 {
 
                 if (confirm("파일을 삭제하시겠습니까?")) {
@@ -248,8 +248,8 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
               var commentContent = $("#commentContent"+BOARDNOTICECOMMENTID).val();
               var encodedCommentContent = encodeURIComponent(commentContent);
               
-            if(BOARDNOTICECOMMENTUSERID==="${id}"
-               || "${role}"==="ADMIN")//관리자경우도넣음
+            if(BOARDNOTICECOMMENTUSERID=="${id}"
+               || "${role}"=="ADMIN")//관리자경우도넣음
                {
                   if (confirm("댓글을 수정하시겠습니까?")) {
                   window.location.href = "<%=request.getContextPath() %>/boardnoticecommentupdate?BOARDNOTICECOMMENTID="
@@ -266,8 +266,8 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
             //댓글 삭제
             function CommentDelete(BOARDNOTICECOMMENTUSERID,BOARDNOTICECOMMENTID) {
                  
-            	if(BOARDNOTICECOMMENTUSERID==="${id}"
-                || "${role}"==="ADMIN")//관리자경우도넣음
+            	if(BOARDNOTICECOMMENTUSERID=="${id}"
+                || "${role}"=="ADMIN")//관리자경우도넣음
                    {
                      if (confirm("댓글을 삭제하시겠습니까?")) {
                      window.location.href = "<%=request.getContextPath() %>/boardnoticecommentdelete?BOARDNOTICECOMMENTID="
