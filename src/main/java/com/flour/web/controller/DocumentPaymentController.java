@@ -130,11 +130,10 @@ public class DocumentPaymentController {
 	
 	
 	//결재대기or반려 삭제
-	@GetMapping("/approval/approvaldelete")
+	@PostMapping("/approval/approvaldelete")
 	public String paymentDelete() throws Exception {
-		
-		documentpaymentservice.paymentDelete();
-		return "redirect:/approval";
+	    documentpaymentservice.paymentDelete();
+	    return "redirect:/approval";
 	}
 	
 

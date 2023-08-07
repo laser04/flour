@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
-<%@ include file="./common/header.jsp"%>
+         pageEncoding="UTF-8" %>
+<%@ include file="./common/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Index</title>
     <link rel="stylesheet"
-          href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+          href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css"/>
     <link rel="stylesheet"
-          href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+          href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css"/>
 
     <style>
         /* div{border: 1px solid black;} */
@@ -41,6 +41,7 @@
         button.table, button.image, button.link {
             display: none;
         }
+
         /* .toastui-calendar-grid-cell-header{
 
                 height: 26px;
@@ -80,7 +81,7 @@
                         <div class="text-center mt-1" style="cursor: pointer;">출/퇴근
                         </div>
                     </div>
-                    <div class="col-4" onclick="window.location.href = '#';">
+                    <div class="col-4" onclick="window.location.href = 'approval';">
                         <div
                                 class="mx-auto rounded-circle d-flex align-items-center justify-content-center btn border-dark indexIcon">
                             <div style="position: relative;">
@@ -89,7 +90,7 @@
                         </div>
                         <div class="text-center mt-1" style="cursor: pointer;">결재</div>
                     </div>
-                    <div class="col-4" onclick="window.location.href = '#';">
+                    <div class="col-4" onclick="window.location.href = '/mywork';">
                         <div
                                 class="mx-auto rounded-circle d-flex align-items-center justify-content-center btn border-dark indexIcon">
                             <div style="position: relative;">
@@ -101,27 +102,12 @@
 
                 </div>
 
-                <div class="mt-4">
-                    <div class="d-flex">
-                        <div class="col-4 text-center">결재대기</div>
-                        <div class="col-3 text-end">휴가</div>
-                        <div class="col-1 text-center">0</div>
-                        <div class="col-3 text-end">출장</div>
-                        <div class="col-1 text-center">0</div>
-                    </div>
-                    <div class="d-flex">
-                        <div class="col-4 text-center">결재대기</div>
-                        <div class="col-3 text-end">휴가</div>
-                        <div class="col-1 text-center">0</div>
-                        <div class="col-3 text-end">출장</div>
-                        <div class="col-1 text-center">0</div>
-                    </div>
-                </div>
+
             </sec:authorize>
             <sec:authorize access="isAnonymous()">
                 <div>
-                <input type='button' class='log_box btn btn-primary' value='로그인'
-                       onclick="window.location.href = '/login'">
+                    <input type='button' class='log_box btn btn-primary' value='로그인'
+                           onclick="window.location.href = '/login'">
                 </div>
             </sec:authorize>
             <div class="mt-5">
@@ -178,7 +164,8 @@
                     <i class="bi bi-chevron-left" id="prevBtn"
                        style="cursor: pointer;"></i> <span class="fs-4 fw-bold"
                                                            id="yearAndMonth"></span> <i class="bi bi-chevron-right"
-                                                                                        id="nextBtn" style="cursor: pointer;"></i>
+                                                                                        id="nextBtn"
+                                                                                        style="cursor: pointer;"></i>
                 </div>
                 <div class="col-3 text-end pt-1">
                     <button class="btn rounded" onclick="onClickTodayBtn()">Today</button>
@@ -248,7 +235,8 @@
                     <div class="d-flex py-2 text-center border-bottom">
                         <c:set var="trimmedTitleNotice" value="${fn:substring(boardnotice.BOARDNOTICETITLE, 0, 15)}"/>
                         <div class="col-6">
-                            <a href="<%=request.getContextPath() %>/boardnoticeget?BOARDNOTICEID=${boardnotice.BOARDNOTICEID}" class="text-primary">
+                            <a href="<%=request.getContextPath() %>/boardnoticeget?BOARDNOTICEID=${boardnotice.BOARDNOTICEID}"
+                               class="text-primary">
                                     ${trimmedTitleNotice}${fn:length(boardnotice.BOARDNOTICETITLE) > 15 ? '...' : ''}
                             </a>
                         </div>
@@ -257,7 +245,6 @@
                         <div class="col-1">${boardnotice.BOARDNOTICECOUNT}</div>
                     </div>
                 </c:forEach>
-
 
 
             </div>
@@ -283,7 +270,8 @@
                     <div class="d-flex py-2 text-center border-bottom">
                         <c:set var="trimmedTitleNews" value="${fn:substring(boardnews.BOARDNEWSTITLE, 0, 15)}"/>
                         <div class="col-6">
-                            <a href="<%=request.getContextPath() %>/boardnewsget?BOARDNEWSID=${boardnews.BOARDNEWSID}" class="text-primary">
+                            <a href="<%=request.getContextPath() %>/boardnewsget?BOARDNEWSID=${boardnews.BOARDNEWSID}"
+                               class="text-primary">
                                     ${trimmedTitleNews}${fn:length(boardnews.BOARDNEWSTITLE) > 15 ? '...' : ''}
                             </a>
                         </div>
@@ -343,6 +331,7 @@
                 month: month
             };
         }
+
         calendar.next();
 
         var currentYearAndMonth = getCurrentYearAndMonth();
@@ -368,6 +357,7 @@
         var currentYearAndMonth = getCurrentYearAndMonth();
         yearAndMonth.innerText = currentYearAndMonth.year + ". " + currentYearAndMonth.month;
     });
+
     //today button
     function onClickTodayBtn() {
         calendar.today();

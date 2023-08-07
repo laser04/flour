@@ -12,9 +12,9 @@ public interface MyWorkService {
 	////유저정보
 	public List<MyWork> myWork(String USERID) throws Exception;
 	//팀 전체 업무정보 목록들
-	public List<MyWork> teamWorkList(int DEPARTMENTID) throws Exception;
+	public List<MyWork> teamWorkList(String DEPARTMENTNAME) throws Exception;
 	//부서별 명단+진행률정보
-	public List<MyWork> teamWorkUserList(int DEPARTMENTID) throws Exception;
+	public List<MyWork> teamWorkUserList(String DEPARTMENTNAME) throws Exception;
 	//Progress
 	public MyWork myworkProgress(String USERID)  throws Exception;
 	//일정추가

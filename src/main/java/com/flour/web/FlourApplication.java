@@ -18,13 +18,13 @@ public class FlourApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FlourApplication.class, args);
 	}
-	@Bean
-	public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-		SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-		sessionFactory.setDataSource(dataSource);
+		@Bean
+		public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
+			SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
+			sessionFactory.setDataSource(dataSource);
 
-		Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml");
-		sessionFactory.setMapperLocations(res);
-		return sessionFactory.getObject();
-	}
+			Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:mappers/*.xml");
+			sessionFactory.setMapperLocations(res);
+			return sessionFactory.getObject();
+		}
 }

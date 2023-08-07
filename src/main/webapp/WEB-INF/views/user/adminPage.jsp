@@ -539,12 +539,13 @@
 						<div class="shadowWrap p-3">
 							<div class="text-center fs-3 fw-bold">공지 작성</div>
 							<form class="mt-5 p-3" action="<%=request.getContextPath()%>/admin/boardnoticeinsert"  enctype="multipart/form-data" method="post">
+								<sec:csrfInput/>
 								<div class="d-flex">
 									<div
 										class="col-2 fs-5 text-center fw-bold bg-secondary bg-opacity-25">제목</div>
 									<div class="col-10">
 										<input class="p-1 form-control" id="title" type="text"
-											placeholder="제목을 입력해주세요" name="BOARDNOTICETITLE">
+											placeholder="제목을 입력해주세요" name="BOARDNOTICETITLE" required>
 									</div>
 								</div>
 								
@@ -574,12 +575,15 @@
 	                  <div class="shadowWrap p-3">
 	                     <div class="text-center fs-3 fw-bold">뉴스 작성</div>
 	                     <form class="mt-5 p-3" action="<%=request.getContextPath()%>/admin/boardnewsinsert"  enctype="multipart/form-data" method="post">
+	                      
+	                       <sec:csrfInput/>
+	                       
 	                        <div class="d-flex">
 	                           <div
 	                              class="col-2 fs-5 text-center fw-bold bg-secondary bg-opacity-25">제목</div>
 	                           <div class="col-10">
 	                              <input class="p-1 form-control" id="newsTitle" type="text"
-	                                 placeholder="제목을 입력해주세요" name="BOARDNEWSTITLE">
+	                                 placeholder="제목을 입력해주세요" name="BOARDNEWSTITLE" required>
 	                           </div>
 	                        </div>
 	                        
@@ -625,7 +629,9 @@
 						class="px-5 d-flex justify-content-around">
 						<div class="col-4">
 							<div class="rounded"
-								style="background-image: url(''); background-position: center; background-repeat: no-repeat; background-size: cover; height: 320px;"></div>
+								style="background-image: url(''); background-position: center; background-repeat: no-repeat; background-size: cover; height: 320px;">
+								<img src="https://t1.daumcdn.net/cfile/tistory/25253A4E54F5DCB825" alt="userphoto" style="width: 75%; margin-left: 40px;">
+							</div>
 							<div
 								class="d-flex mt-2 mx-auto text-center justify-content-around align-items-center">
 								<div class="col-2 fs-5 fw-bold">이름</div>
@@ -1155,11 +1161,10 @@
 		})
 
 		
+		// csrf토큰 추가하기
+		 const csrfToken = $("meta[name='_csrf']").attr("content");
+		 const csrfHeader = $("meta[name='_csrf_header']").attr("content");
 		
-		
-		
-		
-		//여기부터 추가
 		//휴가신청서 체크 확인(AJAX) 
 		 function holidayCheck(element ) {
 		     // 체크 표시 업데이트
@@ -1188,7 +1193,10 @@
 		     }
 
 		     fetch(urlPath, { //비동기로 보냄
-		       method: 'PUT'
+		       method: 'PUT',
+		       headers: {
+		           [csrfHeader]: csrfToken,
+		         },
 		     })
 		     .then(response => response.text())
 		     .then(data => {
@@ -1221,7 +1229,10 @@
 		     }
 
 		     fetch(urlPath, { //비동기
-		       method: 'PUT'
+		       method: 'PUT',
+		       headers: {
+		           [csrfHeader]: csrfToken,
+		         },
 		     })
 		     .then(response => response.text())
 		     .then(data => {
@@ -1253,7 +1264,10 @@
 		     }
 
 		     fetch(urlPath, {
-		       method: 'PUT'
+		       method: 'PUT',
+		       headers: {
+		           [csrfHeader]: csrfToken,
+		         },
 		     })
 		     .then(response => response.text())
 		     .then(data => {
@@ -1337,28 +1351,67 @@
 		}
 		
 
-		//결제 버튼 
+		// 결제 버튼
 		function submitPayment() {
 		  if (confirm('결제하시겠습니까?')) {
-		    window.location.href = "/admin/approvalcomplete";
+		    var contextPath = '<%=request.getContextPath()%>';
+		    var url = contextPath + '/admin/approvalcomplete';
+
+		    // POST 방식으로 AJAX 요청 보내기
+		    sendAjaxRequest(url, 'POST');
 		  }
 		}
-		//반려버튼
+
+		// 반려 버튼
 		function submitReject() {
 		  if (confirm('반려하시겠습니까?')) {
 		    var contextPath = '<%=request.getContextPath()%>';
-		    window.location.href = contextPath + '/admin/approvalreject';
+		    var url = contextPath + '/admin/approvalreject';
+
+		    // POST 방식으로 AJAX 요청 보내기
+		    sendAjaxRequest(url, 'POST');
 		  }
 		}
-		
-		//결재완료/반려 삭제 버튼
+
+		// 결재 완료/반려 삭제 버튼
 		function submitDelete() {
-			if (confirm('삭제하시겠습니까?')) {
-			  var contextPath = '<%=request.getContextPath()%>';
-			  window.location.href = contextPath + '/admin/approvaldelete';
-			}
+		  if (confirm('삭제하시겠습니까?')) {
+		    var contextPath = '<%=request.getContextPath()%>';
+		    var url = contextPath + '/admin/approvaldelete';
+
+		    // DELETE 방식으로 AJAX 요청 보내기
+		    sendAjaxRequest(url, 'POST');
+		  }
 		}
 
+		function sendAjaxRequest(url, method) {
+			  // csrf 토큰 추가하기
+			  const csrfToken = $("meta[name='_csrf']").attr("content");
+			  const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+			  fetch(url, {
+			    method: method,
+			    headers: {
+			      [csrfHeader]: csrfToken,
+			    },
+			  })
+			  .then(function (response) {
+			    if (!response.ok) {
+			      throw new Error('네트워크 응답이 올바르지 않습니다.');
+			    }
+			    console.log('요청이 성공적으로 처리되었습니다.');
+			    // 성공적으로 AJAX 요청을 처리한 후에 관리자 페이지로 자동으로 이동
+			    window.location.href = '/admin';
+			  })
+			  .catch(function (error) {
+			    console.error('요청이 실패했습니다.', error);
+			  });
+			}
+		
+		
+		
+		
+		
 		//체크 전체선택	
 		function selectAllCheckboxes(targetClass) {
     const masterCheckbox = document.getElementById("selectAll");
@@ -1387,11 +1440,11 @@
     });
 }
 		
-		
+        
+	 //****************************************************************
 		//toast editor
 		const Editor = toastui.Editor;
 		
-		//****************************************************************
 		//공지 작성
 		const noticeEditor = new Editor({
 			el: document.querySelector('#noticeEditor'),
@@ -1402,15 +1455,14 @@
 		});
 		noticeEditor.getMarkdown();
 		
-        //등록 버튼 - 수정필요
+        //등록 버튼 
         var submitBtn = document.getElementById("submitBtn");
         submitBtn.addEventListener("click",()=>{
             document.querySelector('#notice-contents').setAttribute('value' ,noticeEditor.getHTML());
             console.log(editor.getHTML());
         });
 
-        
-        //****************************************************************
+
 		//뉴스 작성
 		const newsEditor = new Editor({
 			el: document.querySelector('#newsEditor'),
@@ -1539,120 +1591,12 @@
 				}
 			}
 		}
-		function populateYearAndMonthOptions() {
-			const yearSelect = document.getElementById("yearSelect");
-			const monthSelect = document.getElementById("monthSelect");
-			const currentYear = new Date().getFullYear();
-			const currentMonth = new Date().getMonth() + 1;
-
-			for (let year = currentYear; year >= currentYear - 5; year--) {
-				const option = document.createElement("option");
-				option.value = year;
-				option.textContent = year;
-				yearSelect.appendChild(option);
-			}
-
-			for (let month = 1; month <= 12; month++) {
-				const option = document.createElement("option");
-				option.value = month;
-				option.textContent = month.toString().padStart(2, '0');
-				monthSelect.appendChild(option);
-			}
-
-			yearSelect.value = currentYear;
-			monthSelect.value = currentMonth;
-		}
-
-		// JSON 배열 형식으로 접속자의 모든 출/퇴근시간 리스트 가져오기
-		function populateCommuteTable() {
-			fetch("/user/commute/check/" + currentUserId)
-					.then(response => {
-						if (response.status === 200) {
-							return response.json();
-						} else {
-							throw new Error("Network response was not ok.");
-						}
-					})
-					.then(data => {
-						// 데이터를 이용하여 테이블을 동적으로 생성.
-						const yearSelect = document.getElementById("yearSelect");
-						const monthSelect = document.getElementById("monthSelect");
-						const selectedYear = parseInt(yearSelect.value);
-						const selectedMonth = parseInt(monthSelect.value);
-
-
-						const filteredData = data.filter(commuteData => {
-							const checkDate = new Date(commuteData.checkDate);
-							return (
-									checkDate.getFullYear() === selectedYear &&
-									checkDate.getMonth() + 1 === selectedMonth // JavaScript months are 0-indexed
-							);
-						});
-						const commuteTableContainer = document.getElementById("commuteTableContainer");
-
-						commuteTableContainer.innerHTML = '';
-
-						// Populate the table with fetched data
-						filteredData.forEach(commuteData => {
-							console.log(filteredData);
-							const newRow = document.createElement("div");
-							newRow.classList.add("d-flex", "mt-2", "p-2", "border-bottom", "border-dark");
-							const formattedDate = formatDate(commuteData.checkDate);
-							const formattedCheckInTime = formatTime(commuteData.checkInTime);
-							const formattedCheckOutTime = formatTime(commuteData.checkOutTime);
-							newRow.innerHTML =
-									'<div class="col-3">' + formattedDate + '</div>' +
-									'<div class="col-3">' + formattedCheckInTime + '</div>' +
-									'<div class="col-3">' + formattedCheckOutTime + '</div>' +
-									'<div class="col-3">' + calculateWorkHours(commuteData.checkInTime, commuteData.checkOutTime) + '</div>';
-							commuteTableContainer.appendChild(newRow);
-						});
-					})
-					.catch(error => {
-						console.error("에러 발생:", error);
-						alert("출근 체크 중 오류가 발생하였습니다. 다시 시도해주세요.");
-					});
-		}
-
-		// Function to format the date as "MM-DD" (e.g., "08-04")
-		function formatDate(dateString) {
-			const date = new Date(dateString);
-			const month = (date.getMonth() + 1).toString().padStart(2, '0');
-			const day = date.getDate().toString().padStart(2, '0');
-			return month + '-' + day;
-		}
-
-		// Function to format the time as "HH:mm" (e.g., "11:28")
-		function formatTime(timeString) {
-			const time = new Date(timeString);
-			const hours = time.getHours().toString().padStart(2, '0');
-			const minutes = time.getMinutes().toString().padStart(2, '0');
-			return hours + ':' + minutes;
-		}
-
-		// Example function to calculate work hours (you can modify this based on your requirements)
-		function calculateWorkHours(checkInTime, checkOutTime) {
-			const checkIn = new Date(checkInTime);
-			const checkOut = new Date(checkOutTime);
-			const diffInMilliseconds = checkOut - checkIn;
-			const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-			const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-
-			// Format hours and minutes to 2 digits with leading zeros
-			const formattedHours = hours.toString().padStart(2, '0');
-			const formattedMinutes = minutes.toString().padStart(2, '0');
-
-			return formattedHours + ":" + formattedMinutes;
-		}
-		populateYearAndMonthOptions();
-
 		function initialize() {
 			getDepartmentList();
 			getDepartmentListModal()
 		}
 
 		initialize();
-
 
 	</script>
 </body>

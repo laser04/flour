@@ -41,11 +41,12 @@
 		<div class="fs-1 fw-bolder text-white">자유게시판</div>
 	</div>
 			<!-- 첫번쨰 폼 -->
-		<form action="/achieve/board/update/${board.boardId}" method="post"
+		<form action="/achieve/board/update" method="post" id="form1"
 		enctype="multipart/form-data">
+		<sec:csrfInput/>
             <input type="hidden"  name="boardFileName" value="${board.boardFileName}">
 			<input type="hidden"  name="boardFilePath" value="${board.boardFilePath}">
-            
+            <input type="hidden"  name="boardId" value="${board.boardId}">
             <div>
                 <div class="p-3 border-top">
                     <input class="fw-bold fs-3 border-0 w-100 form-control" id="title"
@@ -76,7 +77,7 @@
                 <div class="normalCase">
                     <div class="w-100"><a href="/fileDownload/${board.boardId}">${board.boardFileName}</a></div>
                 	<div class="btn btn-danger text-white mx-2 px-4 fw-bold" onclick="FileDelete()" >파일삭제</div>
-                
+                	
                 </div>
                 <div class="updateCase" style="display: none;">
                     <input class="w-100" type="file" name="uploadfile" style="font-size: 0.6em">
@@ -89,6 +90,7 @@
                         <div class="btn btn-success text-white mx-2 px-4 fw-bold" onclick="boardlist()">목록</div>
                         <div class="btn btn-info text-white mx-2 px-4 fw-bold" id="update" onclick="BoardUpdate()" >수정</div>
                         <div class="btn btn-danger text-white mx-2 px-4 fw-bold" id="delete" onclick="boarddelete()">삭제</div>
+                    	
                     </div>
                 </div>
                 <div class="updateCase" style="display:none">
@@ -198,9 +200,9 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
             })
 
             // 기존의 수정, 취소 버튼 클릭 이벤트 바깥에 추가하세요.
-            $("form").first().submit(function () {
-              $("#contents").val(editor.getMarkdown());
-            });
+            $("#form1").submit(function () {
+   			 $("#contents").val(editor.getMarkdown());
+			});
 
    		 // 게시판 삭제 버튼 클릭시 기능
     	function boarddelete() {
@@ -210,7 +212,7 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
            {
     	 		 if (confirm("게시물을 삭제하시겠습니까?")) {
     	   		 // boarddelete() URL로 이동
-    	    		window.location.href = "<%=request.getContextPath()%>boarddelete?boardId=${board.boardId}";
+    	    		window.location.href = "<%=request.getContextPath()%>/achieve/board/delete/${board.boardId}";
     	  			}
            }
     	  else{ 
@@ -222,7 +224,7 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
     
             //목록 클릭시 기능
             function boardlist() {
-            	window.location.href = "<%= request.getContextPath() %>/boardlist";
+            	window.location.href = "<%= request.getContextPath() %>/achieve/board/list/";
             }
             
             //파일삭제 버튼클릭시
@@ -269,8 +271,8 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
                  ||  ${role}==="ADMIN")//관리자경우도넣음
                    {
            			 if (confirm("댓글을 삭제하시겠습니까?")) {
-           			 window.location.href = "<%=request.getContextPath() %>/boardcommentdelete?boardCommentId="
-           				+BOARDCOMMENTID+"&boardId=${board.boardId}";	 
+           			 window.location.href = "<%=request.getContextPath() %>/achieve/board/comment/delete/"
+           				+${board.boardId}+"/"+BOARDCOMMENTID;	 
            	 			}
                    }
                 else{
@@ -287,4 +289,4 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
         </script>
         	<%@ include file="../common/footer.jsp" %>
     </body>
-</html
+</html>

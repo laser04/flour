@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -51,7 +53,6 @@ public class AdminPaymentController {
         mav.addObject("taskreportList", taskreportList);
         mav.addObject("resignationList", resignationList);
         mav.addObject("allusers", userService.listAllDetail());
-
         return mav;
     }
     @GetMapping("/admin/getUsers")
@@ -62,7 +63,6 @@ public class AdminPaymentController {
     public ResponseEntity<?> getDepartments(){
         return ResponseEntity.ok(userService.listDepartment());
     }
-
     //휴가신청서 체크(AJAX)
     @PutMapping("/admin/holidaycheck")
     public ResponseEntity<String> holidayCheck(
@@ -116,29 +116,30 @@ public class AdminPaymentController {
         adminservice.resignationUnCheck(DOCUMENTRESIGNATIONNUM);
         return new ResponseEntity<>("resignationUnCheck!", HttpStatus.OK);
     }
+ 
 
-
-    //결제버튼 클릭(결제처리)
-    @GetMapping("/admin/approvalcomplete")
-    public String paymentComplete(@CurrentUser Users users) throws Exception {
+    // 결제 버튼 클릭(결제 처리)
+    @PostMapping("/admin/approvalcomplete")
+    public ResponseEntity<String> paymentComplete(@CurrentUser Users users) throws Exception {
         adminservice.paymentComplete(users.getUserIdennum(), users.getUserName(), users.getDepartmentName());
-        return "redirect:/admin";
+        // 결제 처리가 완료된 후에 관리자 페이지로 리디렉션
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/admin").build();
     }
 
-    //반려버튼 클릭(반려처리)
-    @GetMapping("/admin/approvalreject")
-    public String paymentReject(@CurrentUser Users users) throws Exception {
-
+    // 반려 버튼 클릭(반려 처리)
+    @PostMapping("/admin/approvalreject")
+    public ResponseEntity<String> paymentReject(@CurrentUser Users users) throws Exception {
         adminservice.paymentReject(users.getUserIdennum(), users.getUserName(), users.getDepartmentName());
-        return "redirect:/admin";
+        // 반려 처리가 완료된 후에 관리자 페이지로 리디렉션
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/admin").build();
     }
 
-    //결재대기or반려 삭제
-    @GetMapping("/admin/approvaldelete")
-    public String paymentDelete() throws Exception {
-
+    // 결재 대기 또는 반려 삭제
+    @PostMapping("/admin/approvaldelete")
+    public ResponseEntity<String> paymentDelete() throws Exception {
         adminservice.paymentDelete();
-        return "redirect:/admin";
+        // 삭제 처리가 완료된 후에 관리자 페이지로 리디렉션
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", "/admin").build();
     }
 
 

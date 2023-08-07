@@ -18,6 +18,7 @@
             src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.js"></script>
     <script
             src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cropper/1.0.1/jquery-cropper.js"></script>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 
     <style>
         .shadowWrap {
@@ -322,7 +323,7 @@
      aria-labelledby="exampleModalLabel" aria-hidden="true"
      data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content" id="workOnCheck">
+        <div class="modal-content" id="workOnChecked">
         	 <div class="modal-header">
 		        <h5 class="modal-title"></h5>
 		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -350,7 +351,7 @@
                 <div class="m-2 text-wrap text-center">
                     <h3>출근 체크하시겠습니까?</h3>
                     <div>
-                        현재시간 : <span id="current-time-commute"></span>
+                        현재시간 : <span id="current-time-commute2"></span>
                     </div>
                 </div>
             </div>
@@ -472,7 +473,7 @@
         newImage.height = 200;
         newImage.classList.add("rounded");
         newImage.style.display = "none";
-        $resultImage.html(newImage);2
+        $resultImage.html(newImage);
         $resultImage.show();
         $confirmBtn.show();
         $cutBtn.hide();
@@ -540,9 +541,9 @@
 
     // 현재 날짜와 시간을 업데이트하는 함수
     function updateDateTime() {
-        var currentDateTime = new Date();
-        var currentDate = currentDateTime.toLocaleDateString('ko-KR');
-        var currentTime = currentDateTime.toLocaleTimeString('ko-KR');
+        const currentDateTime = new Date();
+        const currentDate = currentDateTime.toLocaleDateString('ko-KR');
+        const currentTime = currentDateTime.toLocaleTimeString('ko-KR');
 
         document.getElementById('current-date').textContent = currentDate;
         document.getElementById('current-time').textContent = currentTime;
@@ -564,11 +565,11 @@
                 if(data.status === 1){
                 	errorMessage.innerText = data.message;
                     $("#commuteModalCheck").modal("show");
-                    employeeCommuteCheck();
+                    populateCommuteTable();
                 }else{
                 	errorMessage.innerText = data.message;
                     $("#commuteModalCheck").modal("show");
-                    employeeCommuteCheck();
+                    populateCommuteTable()
                 }
             })
             .catch((error) => {
@@ -590,11 +591,11 @@
                 if(data.status === 1){
                 	errorMessage.innerText = data.message;
                     $("#commuteModalCheck").modal("show");
-                    employeeCommuteCheck();
+                    populateCommuteTable()
                 }else{
                 	errorMessage.innerText = data.message;
                     $("#commuteModalCheck").modal("show");
-                    employeeCommuteCheck();
+                    populateCommuteTable()
                 }
             })
             .catch((error) => {
@@ -618,20 +619,20 @@
 
     function jsonToCsv(jsonData) {
         const csvRows = [];
-        const headers = ['userIdennum', 'userName', 'commuteTime', 'status'];
-        const translatedHeaders = ['사원번호', '사원이름', '출근시간', '상태'];
+        const headers = ['userIdennum', 'userName', 'checkInTime', 'checkOutTime', 'status'];
+        const translatedHeaders = ['사원번호', '사원이름', '출근시간', '퇴근시간', '상태'];
         csvRows.push(translatedHeaders.join(','));
 
         for (const row of jsonData) {
             const values = headers.map(header => {
                 let value = row[header];
-                if (header === 'commuteTime') {
-                    value = new Date(value).toLocaleString(); // Convert date-time strings to a more human-readable format
+                if (header === 'checkInTime' || header === 'checkOutTime') {
+                    formatTime(value); // Convert date-time strings to a more human-readable format
                 } else if (header === 'status') {
                     // Replace "WORKON" and "WORKOFF" with "출근" and "퇴근" respectively
                     value = value === 'WORKON' ? '출근' : '퇴근';
                 }
-                return value.includes(',') ? `"${value}"` : value; // Enclose values containing commas in double quotes
+                return value.includes(',') ? "+value+" : value; // Enclose values containing commas in double quotes
             });
             csvRows.push(values.join(','));
         }
@@ -648,8 +649,9 @@
         }
 
         const csvData = jsonToCsv(jsonData);
-
-        const blob = new Blob([csvData], { type: 'text/csv' });
+        const utf8Bom = "\uFEFF";
+        const csvContent = utf8Bom + csvData;
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement('a');
@@ -722,7 +724,11 @@
                     newRow.classList.add("d-flex", "mt-2", "p-2", "border-bottom", "border-dark");
                     const formattedDate = formatDate(commuteData.checkDate);
                     const formattedCheckInTime = formatTime(commuteData.checkInTime);
-                    const formattedCheckOutTime = formatTime(commuteData.checkOutTime);
+                    let formattedCheckOutTime = formatTime(commuteData.checkOutTime);
+                    if (formattedCheckOutTime === null){
+                        formattedCheckOutTime = "--"
+                    }
+                    console.log(formattedCheckOutTime)
                     newRow.innerHTML =
                         '<div class="col-3">' + formattedDate + '</div>' +
                         '<div class="col-3">' + formattedCheckInTime + '</div>' +

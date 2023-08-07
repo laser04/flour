@@ -31,13 +31,15 @@ button.table, button.image, button.link {
       style="width: 945px; box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);">
       <div class="text-info fw-bolder text-center fs-1">자료실</div>
       <form action="/achieve/board/insert/"  enctype="multipart/form-data" method="post" >
+      
           <sec:csrfInput/>
+          
          <div id="check">
             <div class="mt-3">
                <div class="fs-5 mb-1">&nbsp;제목</div>
                <div>
                   <input class="p-1 form-control" id="title" type="text"
-                     placeholder="제목을 입력해주세요" name="boardTitle">
+                     placeholder="제목을 입력해주세요" name="boardTitle"  required>
                </div>
             </div>
             
@@ -49,7 +51,7 @@ button.table, button.image, button.link {
 			        </div>
 			    </div>
 			    <div style="width: 13%; margin-right: 10px">
-			        <div class="fs-5 mb-1">&nbsp;직책</div>
+			        <div class="fs-5 mb-1">&nbsp;권한</div>
 			        <div>
 			            <input class="form-control bg-secondary bg-opacity-25 p-1 ps-3" type="text" value="${boarddto.userRole}" name="userRole" readonly>
 			        </div>

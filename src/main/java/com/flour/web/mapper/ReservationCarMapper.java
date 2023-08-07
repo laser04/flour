@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.flour.web.domain.ReservationCar;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface ReservationCarMapper {
@@ -14,11 +15,13 @@ public interface ReservationCarMapper {
 	public void reservationRequest(ReservationCar dto) throws Exception;
 	//관리자->차량 요청 승인, String RESERVATIONCARSTATUS) throws Exception;
 	//차량사용완료(승인완료-->신청으로 바뀌게)
-	public void useComplete( String RESERVATIONCARID, String RESERVATIONCARSTATUS) throws Exception;
+	public void useComplete(@Param("RESERVATIONCARID") String RESERVATIONCARID, 
+			@Param("RESERVATIONCARSTATUS")String RESERVATIONCARSTATUS) throws Exception;
 	//차량 반려
 	public void carReject (ReservationCar dto) throws Exception;
 
-	void requestAccept (String RESERVATIONCARID, String RESERVATIONCARSTATUS);
+	void requestAccept (@Param("RESERVATIONCARID")String RESERVATIONCARID, 
+			@Param("RESERVATIONCARSTATUS")String RESERVATIONCARSTATUS);
 	
 
 }

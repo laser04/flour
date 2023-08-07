@@ -93,19 +93,19 @@
 		
 		<c:if test="${startPage > pageblock}">
 			<div>
-			<a href="/achieve/board/search?pageNum=${startPage-pageblock}&searchKeyword=${searchKeyword}&searchCondition=${searchCondition}">&lt;back
+			<a href="/achieve/board/search/?pageNum=${startPage-pageblock}&searchKeyword=${searchKeyword}&searchCondition=${searchCondition}">&lt;back
 			</a></div><br><br>
 		</c:if>
 		
 		<c:forEach var="i" begin="${startPage}" end="${endPage}">
   			<div>
-  			<a href="/achieve/board/search?pageNum=${i}&searchKeyword=${searchKeyword}&searchCondition=${searchCondition}">${i}</a>
+  			<a href="/achieve/board/search/?pageNum=${i}&searchKeyword=${searchKeyword}&searchCondition=${searchCondition}">${i}</a>
   			</div>
 		</c:forEach>
 		
 		<c:if test="${endPage < pageCount }">
 		<br><br><div><a 
-			href="/achieve/board/search?pageNum=${startPage+pageblock}&searchKeyword=${searchKeyword}&searchCondition=${searchCondition}">next&gt;
+			href="/achieve/board/search/?pageNum=${startPage+pageblock}&searchKeyword=${searchKeyword}&searchCondition=${searchCondition}">next&gt;
 		</a></div>
 		</c:if>
 		

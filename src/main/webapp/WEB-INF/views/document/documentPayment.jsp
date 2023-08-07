@@ -521,7 +521,7 @@ textarea#reason {
 			
 				<form action="<%=request.getContextPath()%>/approval/taskreportinsert" method="post" style="width: 800px;"
 				onsubmit="return confirm('제출하시겠습니까?');">
-				
+				<sec:csrfInput/>
 				<!-- 신청한 유저아이디  나중에수정 -->
 				<input type="hidden" name="userIdennum" value="${userInfo.userIdennum}">
 				<!-- 결제상태 -->
@@ -607,7 +607,7 @@ textarea#reason {
 			<div class="d-flex justify-content-center">
 				<form action="<%=request.getContextPath()%>/approval/resignationinsert" method="post" style="width: 800px;"
 				onsubmit="return confirm('제출하시겠습니까?');">
-				
+				<sec:csrfInput/>
 				<!-- 신청한 유저아이디  나중에수정 -->
 				<input type="hidden" name="userIdennum" value="${userInfo.userIdennum}">
 				<!-- 결제상태 -->
@@ -938,8 +938,13 @@ textarea#reason {
 		draftSection.style.display = "block";
 		resignationSection.style.display = "none";
 	});
+	
+	
+	
+	// csrf토큰 추가하기
+	 const csrfToken = $("meta[name='_csrf']").attr("content");
+	 const csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
-	//여기
 	//휴가신청서 체크 확인(AJAX) 
 	 function holidayCheck(element ) {
 	     // 체크 표시 업데이트
@@ -968,7 +973,10 @@ textarea#reason {
 	     }
 
 	     fetch(urlPath, { //비동기로 보냄
-	       method: 'PUT'
+	       method: 'PUT',
+	       headers: {
+	           [csrfHeader]: csrfToken,
+	         },
 	     })
 	     .then(response => response.text())
 	     .then(data => {
@@ -1001,7 +1009,10 @@ textarea#reason {
 	     }
 
 	     fetch(urlPath, { //비동기
-	       method: 'PUT'
+	       method: 'PUT',
+	       headers: {
+	           [csrfHeader]: csrfToken,
+	         },
 	     })
 	     .then(response => response.text())
 	     .then(data => {
@@ -1033,7 +1044,10 @@ textarea#reason {
 	     }
 
 	     fetch(urlPath, {
-	       method: 'PUT'
+	       method: 'PUT',
+	       headers: {
+	           [csrfHeader]: csrfToken,
+	         },
 	     })
 	     .then(response => response.text())
 	     .then(data => {
@@ -1043,14 +1057,45 @@ textarea#reason {
 	       console.error('Error:', error);
 	     });
 	 }
-	//결재대기/반려 삭제 버튼
-	function submitDelete() {
-		if (confirm('삭제하시겠습니까?')) {
-		  var contextPath = '<%=request.getContextPath()%>';
-		  window.location.href = contextPath + '/approval/approvaldelete';
-		}
-	}
 	
+	
+	
+	// 결재대기/반려 삭제 버튼
+	 function submitDelete() {
+	     if (confirm('삭제하시겠습니까?')) {
+	         const csrfToken = $("meta[name='_csrf']").attr("content");
+	         const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+	         
+	         var contextPath = '<%=request.getContextPath()%>';
+	         sendPostRequest(contextPath + '/approval/approvaldelete', {}, csrfHeader, csrfToken);
+	     }
+	 }
+
+	 // POST 전송을 위한 함수
+	 async function sendPostRequest(url, data, csrfHeader, csrfToken) {
+	     const formData = new FormData();
+
+	     for (const key in data) {
+	         formData.append(key, data[key]);
+	     }
+
+	     const response = await fetch(url, {
+	         method: 'POST',
+	         body: formData,
+	         headers: {
+	             [csrfHeader]: csrfToken,
+	         },
+	     });
+
+	     // 응답 메시지 처리
+	     if (response.ok) {
+	         // 페이지 새로고침
+	         window.location.reload();
+	     } else {
+	         // 오류 처리
+	         alert('요청 실패');
+	     }
+	 }
 	//체크 전체선택	
 	function selectAllCheckboxes() {
     const masterCheckbox = document.getElementById("selectAll");

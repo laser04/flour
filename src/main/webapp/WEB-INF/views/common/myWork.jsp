@@ -136,18 +136,16 @@
                            >
                            <i class="bi bi-plus-circle"></i>&nbsp;수정
                         </div>            
-                        <a href="<%=request.getContextPath()%>/myworkcomplete?MYWORKID=${mywork.MYWORKID}&MYWORKENDTIME=<%=today%>"       
-                             class="btn btn-success p-1 btn_update align-middle"
-                              onclick="return confirm('업무를 완료하시겠습니까?')">
-                           <i class="bi-check-circle"></i>&nbsp;완료
-                        </a>
+                       <a href="#" class="btn btn-success p-1 btn_update align-middle"
+						   onclick="completeMyWork('${mywork.MYWORKID}', '<%=today%>'); return false;">
+						  <i class="bi-check-circle"></i>&nbsp;완료
+						</a>
                      </div>
                      <div class="col-2">
                         <div class="trash-wrap">
-                         <a href="<%=request.getContextPath()%>/myworkdelete?MYWORKID=${mywork.MYWORKID}"
-                         onclick="return confirm('업무를 삭제하시겠습니까?')">
-                           <i class="bi bi-trash fs-3"></i>   
-                           </a>   
+                         <a href="#" onclick="deleteMyWork('${mywork.MYWORKID}'); return false;">
+							  <i class="bi bi-trash fs-3"></i>   
+							</a>
                         </div>
                      </div>
                   </div>
@@ -339,6 +337,7 @@
    <!-- 업무 수정 -->
    <form  id="updateform"
     action="<%=request.getContextPath()%>/myworkupdate" method="post">
+	<sec:csrfInput/>
    <!-- MYWORKID 값 보내기 값은 스크립트를통해 넣어둠  -->
     <input type="hidden" id="myworkIdInput" name="MYWORKID" >
    
@@ -606,6 +605,55 @@
                  target.classList.toggle('collapse');
              }
              
+             
+         
+             // 업무 완료 함수
+             function completeMyWork(myWorkId, myWorkEndTime) {
+                 if (confirm('업무를 완료하시겠습니까?')) {
+                     const url = '/myworkcomplete';
+                     const data = { MYWORKID: myWorkId, MYWORKENDTIME: myWorkEndTime };
+                     sendPostRequest(url, data);
+                 }
+             }
+
+             // 업무 삭제 함수
+             function deleteMyWork(myWorkId) {
+                 if (confirm('업무를 삭제하시겠습니까?')) {
+                     const url = '/myworkdelete';
+                     const data = { MYWORKID: myWorkId };
+                     sendPostRequest(url, data);
+                 }
+             }
+
+             // POST 요청을 보내는 함수
+             async function sendPostRequest(url, data) {
+            	  const CONTEXT_PATH = '<%= request.getContextPath() %>';
+                 // csrf 토큰 추가하기
+                 const csrfToken = $("meta[name='_csrf']").attr("content");
+                 const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+
+                 const formData = new FormData();
+
+                 for (const key in data) {
+                     formData.append(key, data[key]);
+                 }
+
+                 const response = await fetch(CONTEXT_PATH + url, {
+                     method: 'POST',
+                     body: formData,
+                     headers: {
+                         [csrfHeader]: csrfToken,
+                     },
+                 });
+
+                 // 응답 메시지 처리
+                 if (response.ok) {
+                     // 페이지 새로고침
+                     window.location.reload();
+                 } else {
+                     // 오류 처리
+                 }
+             }
          </script>
          <%@ include file="footer.jsp" %>
 </body>

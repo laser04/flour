@@ -39,7 +39,8 @@
       <div class="fs-1 fw-bolder text-white">공지사항</div>
    </div>
          <!-- 첫번쨰 폼 -->
-      <form action="<%=request.getContextPath()%>/boardnoticeupdate" method="post" enctype="multipart/form-data">
+      <form action="<%=request.getContextPath()%>/boardnoticeupdate" method="post" enctype="multipart/form-data"
+      id="form1">
            <sec:csrfInput/>
            <!-- *BOARDID값 요청보내기위함 -->
             <input type="hidden"  name="BOARDNOTICEID" value="${boardNotice.BOARDNOTICEID}">
@@ -109,7 +110,7 @@
             <form action="<%=request.getContextPath()%>/boardnoticecomment" method="post">
                 <div class="d-flex justify-content-between px-3">
                     <div class="text-secondary pt-2"><p style="font-weight: bold">댓글</p><p>총 50자까지 가능</p></div>
-                    
+                 <sec:csrfInput/>   
                 </div>
                 <div class="mt-1" style="width: 95%; margin-left: 10px;">
                     <textarea class="form-control p-2" style="height: 75px" name="BOARDNOTICECOMMENTCONTENT"></textarea>
@@ -198,9 +199,9 @@ src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
             })
 
             // 기존의 수정, 취소 버튼 클릭 이벤트 바깥에 추가하세요.
-            $("form").first().submit(function () {
-              $("#contents").val(editor.getMarkdown());
-            });
+           $("#form1").submit(function () {
+   			 $("#contents").val(editor.getMarkdown());
+			});
 
           // 게시판 삭제 버튼 클릭시 기능
        function boardnoticedelete() {

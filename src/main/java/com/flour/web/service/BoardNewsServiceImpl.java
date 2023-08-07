@@ -134,7 +134,7 @@ public class BoardNewsServiceImpl implements BoardNewsService{
 			    Cookie[] cookies = request.getCookies();
 			    if (cookies != null) {
 			        for (Cookie cookie : cookies) {
-			            if (cookie.getName().equals("postView2")) {
+			            if (cookie.getName().equals("postView22")) {
 			                oldCookie = cookie;
 			            }
 			        }
@@ -149,7 +149,7 @@ public class BoardNewsServiceImpl implements BoardNewsService{
 			        }
 			    } else {
 			    	boardNewsMapper.BoardNewsCountIncrease(BOARDNEWSID);//조회수 증가
-			        Cookie newCookie = new Cookie("postView2","[" + BOARDNEWSID + "]");
+			        Cookie newCookie = new Cookie("postView22","[" + BOARDNEWSID + "]");
 			        newCookie.setPath("/");
 			        newCookie.setMaxAge(60 * 60 * 24);
 			        response.addCookie(newCookie);

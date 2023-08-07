@@ -93,39 +93,27 @@
                             <li class="dropdown"><a href="#"
                                                     class="nav-link px-2 link-dark dropdown-toggle"
                                                     id="dropdownDepartment" data-bs-toggle="dropdown"
-                                                    aria-expanded="false">기획팀</a>
+                                                    aria-expanded="false">${departmentName}</a>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownDepartment">
                                     <li><a class="dropdown-item"
-                                           href="../view/teamIntroduce.jsp">팀원 소개</a></li>
-                                    <li><a class="dropdown-item" href="../view/department.jsp">부서
-                                        페이지</a></li>
+                                           href="/mywork">내 업무</a></li>
                                 </ul></li>
-                            <li class="dropdown"><a href="#"
-                                                    class="nav-link px-2 link-dark dropdown-toggle"
-                                                    id="dropdownReservation" data-bs-toggle="dropdown"
-                                                    aria-expanded="false"> 예약 </a>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownReservation">
-                                    <li><a class="dropdown-item" href="/reservation">회의실</a></li>
-                                    <li><a class="dropdown-item" href="/reservation/createevent">차량</a></li>
-                                </ul></li>
+                            <li ><a href="/reservation"
+                            	  class="nav-link px-2 link-dark" id="dropdownReservation" 
+                            	  aria-expanded="false"> 예약 </a></li>
                             <li class="dropdown"><a href="#"
                                                     class="nav-link px-2 link-dark dropdown-toggle" id="dropdownBoard"
                                                     data-bs-toggle="dropdown" aria-expanded="false"> 게시판 </a>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownBoard">
                                     <li><a class="dropdown-item" href="/boardnoticelist">공지사항</a></li>
                                     <li><a class="dropdown-item" href="/boardnewslist">뉴스</a></li>
-                                    <li><a class="dropdown-item" href="/achieve/board/list/">자유게시판</a></li>
+                                    <li><a class="dropdown-item" href="/achieve/board/list/">자료실</a></li>
                                 </ul></li>
-                            <li class="dropdown"><a href="#"
-                                                    class="nav-link px-2 link-dark dropdown-toggle"
-                                                    id="dropdownMyPage" data-bs-toggle="dropdown"
-                                                    aria-expanded="false"> 마이페이지 </a>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMyPage">
-                                    <li><a class="dropdown-item" href="/user/update">내
-                                        정보</a></li>
-                                    <li><a class="dropdown-item" href="/mywork">내
-                                        업무</a></li>
-                                </ul></li>
+                            <li><a href="/user/update"
+                                                    class="nav-link px-2 link-dark"
+                                                    id="dropdownMyPage" 
+                                                    aria-expanded="false">내 정보 </a>
+                               </li>
                             <li><a href="/approval"
                                    class="nav-link px-2 link-dark">결재</a></li>
                             <sec:authorize access="isAuthenticated()">

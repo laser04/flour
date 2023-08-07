@@ -8,6 +8,5 @@ public class BeanSearch {
     AnnotationConfigApplicationContext ac = new AnnotationConfigApplicationContext();
     @Test
     void BeanSearchByType(){
-
     }
 }

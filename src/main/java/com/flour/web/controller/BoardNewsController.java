@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.flour.web.annotation.CurrentUser;
 import com.flour.web.domain.BoardNews;
+import com.flour.web.domain.Users;
 import com.flour.web.service.BoardNewsService;
 
 
@@ -26,17 +27,12 @@ public class BoardNewsController {
 	
 	@Autowired
 	private BoardNewsService boardNewsService;
-	@Autowired
-	private HttpSession session;
-	
+
 	//뉴스 게시판 첫화면 
 	@GetMapping("/boardnewslist") //자유게시판 이동
 	public ModelAndView getBoardNewslist(HttpServletRequest request,Model model) 
 			throws Exception{
 		
-		//%%%%%%%%임시 세션
-		session.setAttribute("USERID", "1");
-			
 		//페이징처리
 		String pageNum=request.getParameter("pageNum");
 		HashMap<String,Integer> pageinfo=boardNewsService.pageInfo(model, pageNum);
@@ -57,7 +53,7 @@ public class BoardNewsController {
 	public ModelAndView searchgetBoardNewslist(HttpServletRequest request,BoardNews dto, Model model) throws Exception{
 
 		String pageNum=request.getParameter("pageNum");
-		ModelAndView mav=new ModelAndView("/Board_News_Search_List");
+		ModelAndView mav=new ModelAndView("/board/Board_News_Search_List");
 		
 		//검색어 처리(연관검색)
 		String searchKeyword="%"+dto.getSearchKeyword()+"%";
@@ -103,7 +99,7 @@ public class BoardNewsController {
 	public ModelAndView MoveGetBoardNews(@RequestParam("BOARDNEWSID") String BOARDNEWSID
 			,HttpServletRequest request, HttpServletResponse response) throws Exception{
 		
-		ModelAndView mav=new ModelAndView("Board_News_Get");
+		ModelAndView mav=new ModelAndView("/board/Board_News_Get");
 		
 		BoardNews dto=boardNewsService.MoveGetBoardNews(BOARDNEWSID,request, response);
 		List<BoardNews> commentlist=boardNewsService.CommentList(BOARDNEWSID);
@@ -146,14 +142,11 @@ public class BoardNewsController {
 	//게시글 댓글 추가
 	@PostMapping("/boardnewscomment")
 	public String BoardNewsCommentInsert(@RequestParam("BOARDNEWSID")String BOARDNEWSID
-			,@RequestParam("BOARDNEWSCOMMENTCONTENT")String BOARDNEWSCOMMENTCONTENT)
+			,@RequestParam("BOARDNEWSCOMMENTCONTENT")String BOARDNEWSCOMMENTCONTENT
+			 ,@CurrentUser Users users)
 					throws Exception{
 		
-		//%%%%%%%%%임시 세션으로함
-		String USERID=(String)session.getAttribute("USERID");
-		
-		
-		boardNewsService.BoardNewsCommentInsert(USERID,BOARDNEWSID, BOARDNEWSCOMMENTCONTENT);	
+		boardNewsService.BoardNewsCommentInsert(users.getUserIdennum(),BOARDNEWSID, BOARDNEWSCOMMENTCONTENT);	
 		
 		int boardnewsid =Integer.parseInt(BOARDNEWSID);
 		return "redirect:boardnewsget?BOARDNEWSID="+boardnewsid;

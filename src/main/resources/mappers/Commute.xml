@@ -30,8 +30,6 @@
                 INNER JOIN users ON users.user_idennum = commute.user_idennum
         WHERE
                     users.user_idennum = #{userIdennum}
-                AND YEAR(commute.check_date) = #{selectedYear}
-          AND MONTH(commute.check_date) = #{selectedMonth}
         ORDER BY
             commute.check_date DESC;
     </select>

@@ -45,13 +45,14 @@ public class BoardController {
         mav.addObject("boardList", boardList);
 
         return mav;
-    }
+    } 
 
     //게시판 검색눌렀을시
     @GetMapping("/achieve/board/search/")
-    public ModelAndView searchGetBoardList(@RequestParam String pageNum, Board dto
+    public ModelAndView searchGetBoardList(HttpServletRequest request, Board dto
             , Model model) throws Exception {
-
+    	
+    	String pageNum = request.getParameter("pageNum");
         ModelAndView mav = new ModelAndView("/board/Board_Search_List");
         //검색어 처리(연관검색)
         String searchKeyword = "%" + dto.getSearchKeyword() + "%";
@@ -124,32 +125,38 @@ public class BoardController {
     }
 
     //boardget에서 파일 다운로드
-    @GetMapping("/fileDownload")
-    public ResponseEntity<Object> fileDownload(@RequestParam("boardId") String boardId) throws IOException {
+    @GetMapping("/fileDownload/{boardId}")
+    public ResponseEntity<Object> fileDownload(
+    		@PathVariable String boardId) throws IOException {
         return boardService.fileDownload(boardId);
     }
 
     //게시글 삭제
-    @DeleteMapping("/achieve/board/delete/{boardId}")
+    @GetMapping("/achieve/board/delete/{boardId}")
     public String BoardDelete(@PathVariable String boardId) {
+
         boardService.boardDelete(boardId);
-        return "redirect:/achieve/board/list";
+        return "redirect:/achieve/board/list/"; 
     }
 
     //게시글 수정
     @PostMapping("/achieve/board/update")
     public String BoardUpdate(@RequestParam("uploadfile") MultipartFile uploadfile
             , Board dto) throws Exception {
-        boardService.boardUpdate(uploadfile, dto);
-        int boardid = dto.getBoardId(); //수정후 수정한 게시글로 이동하기위함
-        return "redirect:/achieve/board/read" + boardid;
+
+        boardService.boardUpdate(uploadfile, dto); 
+        int boardid = dto.getBoardId(); 
+        
+        
+        
+        return "redirect:/achieve/board/read/" + boardid;
     }
 
     //게시글에서 파일삭제 버튼클릭시
     @GetMapping("/filedelete")
     public String FileDelete(@RequestParam("boardId") String boardId) {
         boardService.fileDelete(boardId);
-        return "redirect:/achieve/board/read" + boardId;
+        return "redirect:/achieve/board/read/" + boardId;
     }
 
     //게시글 댓글 추가
@@ -168,17 +175,15 @@ public class BoardController {
     public String BoardCommentUpdate(@PathVariable String boardId,
                                      @PathVariable String boardCommentId,
                                      @PathVariable String content) {
-
+    	
         boardService.boardCommentUpdate(boardCommentId, content);
-        System.out.println(content+"dkssu");
         return "redirect:/achieve/board/read/" + boardId;
     }
 
     //게시글 댓글 삭제
-    @PostMapping("/achieve/board/comment/delete/{boardId}/{boardCommentId}")
+    @GetMapping("/achieve/board/comment/delete/{boardId}/{boardCommentId}")
     public String BoardCommentDelete(@PathVariable String boardId,
                                      @PathVariable String boardCommentId) {
-
         boardService.boardCommentDelete(boardCommentId);
         return "redirect:/achieve/board/read/" + boardId;
     }

@@ -336,6 +336,7 @@
 	<!-- 반려 사유 선택 -->
 	<!-- 반려테이블 만들기 -->
 	<form action="<%=request.getContextPath()%>/reservation/carreject" method="post">
+	<sec:csrfInput/>
 	<div class="modal fade" id="adminModalDetail" tabindex="-1"
 		role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
@@ -505,8 +506,9 @@ yearAndMonth.innerText = date.getFullYear() + ". " + (date.getMonth() + 1);
 }
 
 
-
-
+// csrf토큰 추가하기
+ const csrfToken = $("meta[name='_csrf']").attr("content");
+ const csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
 //일정 생성 요청 보내기
 async function createEvent(event) {
@@ -517,7 +519,10 @@ async function createEvent(event) {
       url: "<%=request.getContextPath()%>/reservation/createevent",
       data: JSON.stringify(event), 
       contentType: "application/json; charset=utf-8", 
-      dataType: "json"
+      dataType: "json",
+      beforeSend: function (xhr) {
+          xhr.setRequestHeader(csrfHeader, csrfToken);
+        }, 
  		 })
 	}
  
@@ -527,6 +532,7 @@ async function updateEvent(event) {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
+      [csrfHeader]: csrfToken,
     },
     body: JSON.stringify(event),
   });
@@ -536,6 +542,9 @@ async function updateEvent(event) {
 async function deleteEvent(id, location) {
   await fetch("<%=request.getContextPath()%>/reservation/deleteevent?id="+id+"&location="+location, {
     method: 'DELETE',
+    headers: {
+        [csrfHeader]: csrfToken,
+      },
     
   });
 }
@@ -584,7 +593,6 @@ calendar.on('beforeDeleteEvent', async (eventData) => {
 });
 
 $('.toastui-calendar-event-form-popup-slot').on('DOMNodeInserted', function() {
-	   console.log("open14");
 	  /* location */
 	    $(".toastui-calendar-popup-section-location").parent().attr("style","display:none"); 
 	  /* private */
@@ -636,7 +644,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	//입력한사람만 일정 수정가능하게해주는 이벤트(location에 userid저장)
 	calendar.on('clickEvent', (eventData)=>{
 
- 	 if(eventData.event.location == ${id}){
+ 	 if(eventData.event.location == ${id}
+ 	 || ${role}=="ADMIN"){
   		options.useDetailPopup = true;
   	}else{
    	options.useDetailPopup = false;
@@ -649,6 +658,9 @@ document.addEventListener('DOMContentLoaded', () => {
  		 }
 	});
 
+	
+	
+	
 		//차량 예약
 		// 모달
 		let applicationTextareaWorkBox = document.getElementById("applicationTextareaWorkBox");
@@ -748,35 +760,53 @@ document.addEventListener('DOMContentLoaded', () => {
 					}
  			
 					
-			//requestaccept으로 이동
-			function sendAcceptData(carId, carStatus) {
-			 window.location.href = "<%=request.getContextPath()%>/reservation/requestaccept?RESERVATIONCARID="
-					 +carId+"&RESERVATIONCARSTATUS="+carStatus;
-				}
-			
-			
-			//승인완료 클릭-->신청 
-			function usecomplete(carId, carStatus) {
-				 if (confirm("차량을 반납하시겠습니까?")) {
-					   window.location.href =
-					    "<%=request.getContextPath()%>/reservation/usecomplete?RESERVATIONCARID=" +
-					    carId +
-					    "&RESERVATIONCARSTATUS=" +
-					    carStatus;
-				 }
-			
-			}
-			
-			//반려 클릭--> 신청
-			function rejectcancel(carId, carStatus) {
-				 if (confirm("반려를 취소하시겠습니까?")) {
-					   window.location.href =
-					    "<%=request.getContextPath()%>/reservation/usecomplete?RESERVATIONCARID=" +
-					    carId +
-					    "&RESERVATIONCARSTATUS=" +
-					    carStatus;
-				 }
-			}
+					
+					
+					//  Ajax POST로 전환
+					function sendAcceptData(carId, carStatus) {
+					  sendPostRequest('/reservation/requestaccept', { RESERVATIONCARID: carId, RESERVATIONCARSTATUS: carStatus });
+					}
+
+					function usecomplete(carId, carStatus) {
+					  if (confirm("차량을 반납하시겠습니까?")) {
+					    sendPostRequest('/reservation/usecomplete', { RESERVATIONCARID: carId, RESERVATIONCARSTATUS: carStatus });
+					  }
+					}
+
+					function rejectcancel(carId, carStatus) {
+					  if (confirm("반려를 취소하시겠습니까?")) {
+					    sendPostRequest('/reservation/usecomplete', { RESERVATIONCARID: carId, RESERVATIONCARSTATUS: carStatus });
+					  }
+					}
+
+					// POST 전송을 위한 함수
+					async function sendPostRequest(url, data) {
+						// csrf 토큰 추가하기
+						  const csrfToken = $("meta[name='_csrf']").attr("content");
+						  const csrfHeader = $("meta[name='_csrf_header']").attr("content");
+	
+					  const formData = new FormData();
+
+					  for (const key in data) {
+					    formData.append(key, data[key]);
+					  }
+
+					  const response = await fetch('<%=request.getContextPath()%>' + url, {
+					    method: 'POST',
+					    body: formData,
+					    headers: {
+						      [csrfHeader]: csrfToken,
+						    },
+					  });
+
+					  // 응답 메시지 처리
+					  if (response.ok) {
+					    // 페이지 새로고침
+					    window.location.reload();
+					  } else {
+					    // 오류 처리
+					  }
+					}
 			
 	</script>
 	<%@ include file="footer.jsp"%>

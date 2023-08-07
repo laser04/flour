@@ -53,7 +53,7 @@ public class ReservationRoomController {
 	
 	  @GetMapping("/reservation/getreservation") 
 	  public ResponseEntity<List<ReservationRoomEvent>> getReservation() throws Exception{ // 데이터베이스에서 저장된 이벤트 정보 가져오기 로직을 여기에 구현하세요.
-
+		  
 	  List<ReservationRoomEvent> events = reservationservice.getReservation();
 	  return new ResponseEntity<>(events, HttpStatus.OK); 
 	  }

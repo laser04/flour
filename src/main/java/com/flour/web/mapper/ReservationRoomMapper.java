@@ -17,7 +17,8 @@ public interface ReservationRoomMapper {
 	public void updateEvent(ReservationRoomEvent event) throws Exception;
 	
 	//일정 삭제
-	public void deleteEvent( String id, String location ) throws Exception;
+	public void deleteEvent(@Param("id") String id, 
+			@Param("location")String location ) throws Exception;
 	
 	//일정정보 가져오기
 	public List<ReservationRoomEvent> getReservation() throws Exception;

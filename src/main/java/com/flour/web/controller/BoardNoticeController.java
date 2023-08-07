@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.flour.web.annotation.CurrentUser;
 import com.flour.web.domain.BoardNotice;
+import com.flour.web.domain.Users;
 import com.flour.web.service.BoardNoticeService;
 
 
@@ -28,17 +29,12 @@ public class BoardNoticeController {
 	
 	@Autowired
 	private BoardNoticeService boardNoticeService;
-	@Autowired
-	private HttpSession session;
-	
+
 	//자유 게시판 첫화면 
 	@GetMapping("/boardnoticelist") //자유게시판 이동
-	public ModelAndView getBoardNoticelist(HttpServletRequest request,Model model) 
-			throws Exception{
+	public ModelAndView getBoardNoticelist(HttpServletRequest request,Model model) throws Exception{
 		
-		//%%%%%%%%임시 세션
-		session.setAttribute("USERID", "1");
-			
+
 		//페이징처리
 		String pageNum=request.getParameter("pageNum");
 		HashMap<String,Integer> pageinfo=boardNoticeService.pageInfo(model, pageNum);
@@ -58,7 +54,6 @@ public class BoardNoticeController {
 	//게시판 검색눌렀을시
 	@GetMapping("/boardnoticelist/search")
 	public ModelAndView searchgetBoardNoticelist(HttpServletRequest request,BoardNotice dto, Model model) throws Exception{
-		
 		String pageNum=request.getParameter("pageNum");
 		ModelAndView mav=new ModelAndView("/board/Board_Notice_Search_List");
 		
@@ -149,12 +144,11 @@ public class BoardNoticeController {
 	//게시글 댓글 추가
 	@PostMapping("/boardnoticecomment")
 	public String BoardNoticeCommentInsert(@RequestParam("BOARDNOTICEID")String BOARDNOTICEID
-			,@RequestParam("BOARDNOTICECOMMENTCONTENT")String BOARDNOTICECOMMENTCONTENT)
-					throws Exception{
-		//%%%%%%%%%임시 세션으로함
-		String USERID=(String)session.getAttribute("USERID");
+			,@RequestParam("BOARDNOTICECOMMENTCONTENT")String BOARDNOTICECOMMENTCONTENT
+			,@CurrentUser Users users) throws Exception{
 	
-		boardNoticeService.BoardNoticeCommentInsert(USERID,BOARDNOTICEID, BOARDNOTICECOMMENTCONTENT);	
+	
+		boardNoticeService.BoardNoticeCommentInsert(users.getUserIdennum(),BOARDNOTICEID, BOARDNOTICECOMMENTCONTENT);	
 		int boardnoticeid =Integer.parseInt(BOARDNOTICEID);
 		return "redirect:boardnoticeget?BOARDNOTICEID="+boardnoticeid;
 	}
@@ -164,7 +158,7 @@ public class BoardNoticeController {
 	public String BoardNoticeCommentUpdate(@RequestParam("BOARDNOTICEID")String BOARDNOTICEID
 			,@RequestParam("BOARDNOTICECOMMENTID")String BOARDNOTICECOMMENTID
 			,@RequestParam("BOARDNOTICECOMMENTCONTENT")String BOARDNOTICECOMMENTCONTENT)throws Exception{
-		
+
 		boardNoticeService.BoardNoticeCommentUpdate(BOARDNOTICECOMMENTID, BOARDNOTICECOMMENTCONTENT);
 		int boardnoticeid =Integer.parseInt(BOARDNOTICEID);
 		return "redirect:boardnoticeget?BOARDNOTICEID="+boardnoticeid;

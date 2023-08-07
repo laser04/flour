@@ -25,7 +25,7 @@ public class ReservationCarController {
 		List<ReservationCar> carList=reservationcarService.carCategoryList();
 		ModelAndView mav = new ModelAndView("/common/reservation");
 		mav.addObject("carList",carList);
-		System.out.println(carList);
+		
 		return mav;
 	}
 	
@@ -36,20 +36,21 @@ public class ReservationCarController {
         return new ModelAndView("redirect:/reservation");
 	}
 	
-	//관리자->차량 요청 승인
-	@GetMapping("/reservation/requestaccept")
-	public ModelAndView requestAccept(@RequestParam("RESERVATIONCARID") String RESERVATIONCARID
-			,@RequestParam("RESERVATIONCARSTATUS") String RESERVATIONCARSTATUS) throws Exception {
-		reservationcarService.requestAccept(RESERVATIONCARID, RESERVATIONCARSTATUS);
-        return new ModelAndView("redirect:/reservation");
+	// 차량 요청 승인
+	@PostMapping("/reservation/requestaccept")
+	public ModelAndView requestAccept(@RequestParam("RESERVATIONCARID") String RESERVATIONCARID,
+	    @RequestParam("RESERVATIONCARSTATUS") String RESERVATIONCARSTATUS) throws Exception {
+	  reservationcarService.requestAccept(RESERVATIONCARID, RESERVATIONCARSTATUS);
+	  return new ModelAndView("redirect:/reservation");
 	}
-	//차량사용완료(승인완료-->신청으로 바뀌게)
-	@GetMapping("/reservation/usecomplete")
-	public ModelAndView useComplete(@RequestParam("RESERVATIONCARID") String RESERVATIONCARID
-			,@RequestParam("RESERVATIONCARSTATUS") String RESERVATIONCARSTATUS) throws Exception {
-		
-		reservationcarService.useComplete(RESERVATIONCARID, RESERVATIONCARSTATUS);
-        return new ModelAndView("redirect:/reservation");
+
+	// 차량 사용 완료 (승인 완료->신청으로 바뀌게)
+	@PostMapping("/reservation/usecomplete")
+	public ModelAndView useComplete(@RequestParam("RESERVATIONCARID") String RESERVATIONCARID,
+	    @RequestParam("RESERVATIONCARSTATUS") String RESERVATIONCARSTATUS) throws Exception {
+
+	  reservationcarService.useComplete(RESERVATIONCARID, RESERVATIONCARSTATUS);
+	  return new ModelAndView("redirect:/reservation");
 	}
 	
 	//차량 반려

@@ -26,17 +26,17 @@ public class MyWorkServiceImpl implements MyWorkService{
 	
 	//팀 전체 업무정보 목록들
 	@Override
-	public List<MyWork> teamWorkList(int DEPARTMENTID) throws Exception {
+	public List<MyWork> teamWorkList(String DEPARTMENTNAME) throws Exception {
 
 		//팀 전체 업무정보 목록들
-        return myworkmapper.teamWork(DEPARTMENTID);
+        return myworkmapper.teamWork(DEPARTMENTNAME);
 	}
 	//부서별 명단+진행률정보
 	@Override
-	public List<MyWork> teamWorkUserList(int DEPARTMENTID) throws Exception {
+	public List<MyWork> teamWorkUserList(String DEPARTMENTNAME) throws Exception {
 		//부서별 명단+진행률정보
 
-        return myworkmapper.teamWorkUser(DEPARTMENTID);
+        return myworkmapper.teamWorkUser(DEPARTMENTNAME);
 	}
 	//progress
 	@Override

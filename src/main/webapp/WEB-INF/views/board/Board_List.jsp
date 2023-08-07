@@ -92,19 +92,19 @@
 		
 		<c:if test="${startPage > pageblock}">
 			<div>
-			<a href="/achieve/board/list?pageNum=${startPage-pageblock}">&lt;back
+			<a href="/achieve/board/list/?pageNum=${startPage-pageblock}">&lt;back
 			</a></div><br><br>
 		</c:if>
 		
 		<c:forEach var="i" begin="${startPage}" end="${endPage}">
   			<div>
-  			<a href="/achieve/board/list?pageNum=${i}">${i }</a>
+  			<a href="/achieve/board/list/?pageNum=${i}">${i }</a>
   			</div>
 		</c:forEach>
 		
 		<c:if test="${endPage < pageCount }">
 		<br><br><div><a 
-			href="/achieve/board/list?pageNum=${startPage+pageblock}">next&gt;
+			href="/achieve/board/list/?pageNum=${startPage+pageblock}">next&gt;
 		</a></div>
 		</c:if>
 		

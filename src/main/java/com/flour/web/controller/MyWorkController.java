@@ -2,7 +2,6 @@ package com.flour.web.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
 
 import com.flour.web.annotation.CurrentUser;
 import com.flour.web.domain.Users;
@@ -21,28 +20,22 @@ public class MyWorkController {
 	
 	@Autowired 
 	private MyWorkService myworkservice;
-	@Autowired
-	private HttpSession session;
+	
 	
 	//mywork 첫 전체화면
 	@GetMapping("/mywork")
 	public ModelAndView  myWork(@CurrentUser Users users) throws Exception{
-
-		session.setAttribute("department_id", 3);
-
-		int DEPARTMENTID=(int)session.getAttribute("department_id");
-
-		myworkservice.myWork(users.getUserIdennum());
-
-		ModelAndView mav=new ModelAndView("/common/myWork");
 		
+		ModelAndView mav=new ModelAndView("/common/myWork");
 		//내 업무정보 목록들 
 		List<MyWork> myWorkList= myworkservice.myWork(users.getUserIdennum());
 		//팀 전체 업무정보 목록들
-		List<MyWork> teamWorkList= myworkservice.teamWorkList(DEPARTMENTID);
+		List<MyWork> teamWorkList= myworkservice.teamWorkList(users.getDepartmentName());
 		//부서별 명단+진행률정보
-		List<MyWork> teamWorkUserList= myworkservice.teamWorkUserList(DEPARTMENTID);
-
+		List<MyWork> teamWorkUserList= myworkservice.teamWorkUserList(users.getDepartmentName());
+		
+		
+		
 		mav.addObject("myWorkList",myWorkList);
 		mav.addObject("teamWorkList",teamWorkList);
 		mav.addObject("teamWorkUserList",teamWorkUserList);
@@ -69,20 +62,19 @@ public class MyWorkController {
 		return "redirect:mywork";
 	}
 	
-	//업무 완료   
-	@GetMapping("/myworkcomplete")
-	public String myWorkComplete(@RequestParam("MYWORKID")String MYWORKID
-			,@RequestParam("MYWORKENDTIME")String MYWORKENDTIME) throws Exception{
-		myworkservice.myWorkComplete(MYWORKID,MYWORKENDTIME);
-		return "redirect:mywork";
+	// 업무 완료
+	@PostMapping("/myworkcomplete")
+	public String myWorkComplete(@RequestParam("MYWORKID") String MYWORKID,
+	                             @RequestParam("MYWORKENDTIME") String MYWORKENDTIME) throws Exception {
+	    myworkservice.myWorkComplete(MYWORKID, MYWORKENDTIME);
+	    return "redirect:mywork";
 	}
-	
-	//업무 삭제
-	@GetMapping("/myworkdelete")
-	public String myWorkDelete(@RequestParam("MYWORKID")String MYWORKID) throws Exception{
-		myworkservice.myWorkDelete(MYWORKID);
-		return "redirect:mywork";
+
+	// 업무 삭제
+	@PostMapping("/myworkdelete")
+	public String myWorkDelete(@RequestParam("MYWORKID") String MYWORKID) throws Exception {
+	    myworkservice.myWorkDelete(MYWORKID);
+	    return "redirect:mywork";
 	}
-	
 	
 }
