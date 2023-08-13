@@ -25,12 +25,18 @@ public class ChatController {
     @Autowired
     private ChatRoomService chatRoomService;
 
+    //채팅 메시지 보내기(MessageMapping)
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage chatMessage) {
+        //채팅방 식별자를 가져온다.
         var chatId = chatRoomService
                 .getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
+        //채팅방 식별자를 채팅 메시지에 설정한다.
         chatMessage.setChatId(chatId.get());
+
+        //DB에 메시지를 저장하고, 상대방에게 메시지를 전송한다.
         ChatMessage saved = chatMessageService.newMessage(chatMessage);
+        //상대방에게 메시지를 전송한다.
         messagingTemplate.convertAndSendToUser(
                 chatMessage.getRecipientId(), "/queue/messages",
                 new ChatNotification(
@@ -39,6 +45,7 @@ public class ChatController {
                         saved.getRecipientName()));
     }
 
+    //채팅방 생성
     @GetMapping("/messages/{senderId}/{recipientId}/count")
     public ResponseEntity<Long> countNewMessages(
             @PathVariable String senderId,
@@ -47,6 +54,7 @@ public class ChatController {
                 .ok(chatMessageService.countNewMessages(senderId, recipientId));
     }
 
+    //채팅방 목록
     @GetMapping("/messages/{senderId}/{recipientId}")
     public ResponseEntity<?> findChatMessages(@PathVariable String senderId,
                                               @PathVariable String recipientId) {
@@ -54,6 +62,7 @@ public class ChatController {
                 .ok(chatMessageService.findChatMessages(senderId, recipientId));
     }
 
+    //채팅방 내용
     @GetMapping("/messages/{id}")
     public ResponseEntity<?> findMessage(@PathVariable String id) {
         System.out.println(chatMessageService.findById(id));

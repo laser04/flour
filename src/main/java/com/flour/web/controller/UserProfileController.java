@@ -33,7 +33,6 @@ public class UserProfileController {
     static final String USER_UPDATE_VIEW_NAME = "/user/user_update";
 
     private final UserService userService;
-    private final ModelMapper modelMapper;
 
     @InitBinder("userPasswordForm")
     public void initBinder(WebDataBinder webDataBinder) {

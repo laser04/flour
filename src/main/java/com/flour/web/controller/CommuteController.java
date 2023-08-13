@@ -24,6 +24,7 @@ public class CommuteController {
     private final CommuteService commuteService;
     Map<String, Object> response = new HashMap<>();
 
+    //출근 체크
     @GetMapping("/user/commute/work_on_check/{userIdennum}")
     public ResponseEntity<Map<String, Object>> checkWorkOn(@PathVariable String userIdennum, @CurrentUser Users users) {
         if (userIdennum.equals(users.getUserIdennum())) {
@@ -41,6 +42,7 @@ public class CommuteController {
         return ResponseEntity.ok(response);
     }
 
+    //퇴근 체크
     @GetMapping("/user/commute/work_off_check/{userIdennum}")
     public ResponseEntity<Map<String, Object>> workoff(@PathVariable String userIdennum, @CurrentUser Users users) {
         if (userIdennum.equals(users.getUserIdennum())) {
@@ -65,6 +67,7 @@ public class CommuteController {
         }
     }
 
+    //전체 출퇴근 체크
     @GetMapping("/user/commute/check/{userIdennum}")
     public ResponseEntity<?> commuteCheck(@PathVariable String userIdennum, @CurrentUser Users users) {
         if (userIdennum.equals(users.getUserIdennum())) {

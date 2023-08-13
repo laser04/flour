@@ -34,7 +34,7 @@ public class UserJoinController {
         webDataBinder.addValidators(joinFormValidator);
     }
 
-    // signUpForm 을 받을때 403 검증도 하고 validator 검증도 한다.
+    //회원가입
     @PostMapping("/join")
     public String signUpSubmit(@Valid joinForm joinForm, Errors errors, Model model) { // @ModelAttribute 복합(여러값)들을 가진 객체를 받을 때 사용을 하지만 파라미터 가 없어도 되기 때문에 생략이 가능하다.
         System.out.println(joinForm);
@@ -51,7 +51,7 @@ public class UserJoinController {
         userService.login(users);
         return "redirect:/";
     }
-
+    //메일 중복 체크
     @GetMapping("/mail_check")
     public ResponseEntity<String> mailcheck(String email) {
         if (userService.existByEmail(email)) {
@@ -61,6 +61,7 @@ public class UserJoinController {
         }
     }
 
+    //이메일 인증
     @GetMapping("/check_email")
     public String checkEmail(@CurrentUser Users users, Model model) {
         model.addAttribute("email", users.getUserEmail());
@@ -79,7 +80,7 @@ public class UserJoinController {
         return "redirect:/";
     }
 
-
+    //이메일 인증 확인(토큰)
     @GetMapping("/check_email-token")
     public String checkEmailToken(String token, String userIdennum, Model model) {
         Users users = userService.findByIdennum(userIdennum);
@@ -99,7 +100,7 @@ public class UserJoinController {
         model.addAttribute("name", users.getUserName());
         return view;
     }
-
+    //로그인
     @GetMapping("/login-by-id")
     public String loginById(String token, String userId, Model model) {
         Users users = userService.findByIdennum(userId);

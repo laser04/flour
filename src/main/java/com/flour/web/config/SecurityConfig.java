@@ -18,7 +18,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import javax.sql.DataSource;
 
-//얘가 보안 담당임
+//스프링 시큐리티 설정
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
