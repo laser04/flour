@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Service
 @Component
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService , UserDetailsService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserMapper userMapper;
 
@@ -46,25 +46,36 @@ public class UserServiceImpl implements UserService , UserDetailsService {
         sendSignUpConfirmEmail(users);
         return users;
     }
+
     @Override
     public Users findByIdennum(String userIdennum) {
         return userMapper.findByIdennum(userIdennum);
     }
+
     @Override
     public int CountAllUser() {
         return userMapper.countAllUser();
     }
+
     @Override
     public List<Users> listAll() {
         return userMapper.findAll();
     }
+
     @Override
-    public List<Users> listAllDetail(){return userMapper.findAllDetail();}
-    public List<Users> listDepartment(){return userMapper.findDepartmentAll();}
+    public List<Users> listAllDetail() {
+        return userMapper.findAllDetail();
+    }
+
+    public List<Users> listDepartment() {
+        return userMapper.findDepartmentAll();
+    }
+
     @Override
     public void updateEmailVerified(Users users) {
         userMapper.updateEmailVerified(users);
     }
+
     @Override
     public void login(Users users) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
@@ -94,6 +105,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
         userMapper.insertUser(users);
         return users;
     }
+
     @Override
     public void sendSignUpConfirmEmail(Users users) {
         users.generateEmailCheckToken();
@@ -140,7 +152,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String idennum) throws UsernameNotFoundException {
         Users users = userMapper.findByIdennum(idennum);
-        if(users == null) {
+        if (users == null) {
             throw new UsernameNotFoundException(idennum);
         }
         return new UserAccountDto(users);
@@ -153,8 +165,9 @@ public class UserServiceImpl implements UserService , UserDetailsService {
                 .filter(user -> !user.getUserIdennum().equals(users.getUserIdennum()))
                 .collect(Collectors.toList());
     }
+
     @Override
-    public boolean existByEmail(String email){
+    public boolean existByEmail(String email) {
         return userMapper.existByEmail(email);
     }
 }

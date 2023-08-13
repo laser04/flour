@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
-<%@ include file="../common/header.jsp"%>
+         pageEncoding="UTF-8" %>
+<%@ include file="../common/header.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Insert title here</title>
     <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css" />
+          href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.css"/>
     <script
             src="https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js"
             async
@@ -34,7 +34,7 @@
 <div class="mx-auto mt-5 p-3 shadowWrap" style="width: 1350px;">
     <input id="tab-info" type="hidden" value="<c:out value='${tabInfo}'/>">
     <div class="text-center fs-3 fw-bold pb-3 border-bottom">
-        <c:out value="${users.userIdennum} / ${users.departmentName} / ${users.userName} / ${users.userPosition}" />
+        <c:out value="${users.userIdennum} / ${users.departmentName} / ${users.userName} / ${users.userPosition}"/>
     </div>
 
     <div class="d-flex mt-4">
@@ -102,7 +102,8 @@
                                     <!-- Options for the month will be added dynamically -->
                                 </select>
                             </div>
-                            <div class="w-100 btn btn-primary text-white fw-bold" onclick="downloadCSV()">Excel 다운로드</div>
+                            <div class="w-100 btn btn-primary text-white fw-bold" onclick="downloadCSV()">Excel 다운로드
+                            </div>
                             <!-- Header row (static) -->
                             <div class="d-flex mt-3 p-2 border-bottom border-dark">
                                 <div class="col-3">날짜</div>
@@ -119,7 +120,7 @@
                     <div class="d-flex justify-content-center align-items-center h-100">
                         <form class="needs-validation h-100 col-7 me-5" action="/user/update/profile"
                               method="post" novalidate>
-                            <sec:csrfInput />
+                            <sec:csrfInput/>
                             <div class="form-group">
                                 <label class="fw-bold" for="user_email">이메일</label> <input
                                     id="user_email" type="text" name="email" class="form-control"
@@ -176,7 +177,7 @@
                             </div>
                             <div class="form-group">
                                 <input id="profileImage" type="hidden" name="photo"
-                                       class="form-control" />
+                                       class="form-control"/>
                             </div>
 
                             <div class="form-group mt-2 text-center mt-4">
@@ -194,7 +195,7 @@
                                         </c:if>
                                         <c:if test="${!empty users.userPhoto}">
                                             <img class="rounded" src="${users.userPhoto}" width="200px"
-                                                 height="200px" alt="${users.userName}" />
+                                                 height="200px" alt="${users.userName}"/>
                                         </c:if>
                                     </div>
                                 </div>
@@ -205,17 +206,21 @@
                                         <label
                                                 class="custom-file-label cropped-new-profile-imagebtn-block btn btn-info fw-bold text-white"
                                                 for="profile-image-file">프로필 이미지 변경</label> <input type="file"
-                                                                                                   class="custom-file-input" id="profile-image-file"
+                                                                                                   class="custom-file-input"
+                                                                                                   id="profile-image-file"
                                                                                                    style="display: none;">
                                     </div>
                                     <div id="new-profile-image-control" class="py-1">
                                         <div class="col-7 d-flex justify-content-between mx-auto">
                                             <button class="btn btn-warning btn-block fw-bold text-white"
-                                                    id="cut-button">수정</button>
+                                                    id="cut-button">수정
+                                            </button>
                                             <button class="btn btn-success btn-block fw-bold text-white"
-                                                    id="confirm-button">저장</button>
+                                                    id="confirm-button">저장
+                                            </button>
                                             <button class="btn btn-danger btn-block fw-bold text-white"
-                                                    id="reset-button">취소</button>
+                                                    id="reset-button">취소
+                                            </button>
                                         </div>
                                     </div>
                                     <div id="cropped-new-profile-image" class="mt-3"></div>
@@ -240,7 +245,7 @@
                                 50자 사이로 입력해주세요 </small>
                                 <c:if test="${!empty errors['newPassword']}">
                                     <small class="form-text text-danger"><c:out
-                                            value="${errors['newPassword']}" /></small>
+                                            value="${errors['newPassword']}"/></small>
                                 </c:if>
                             </div>
                             <div class="form-group mt-2">
@@ -251,12 +256,13 @@
                                        maxlength="50" required>
                                 <c:if test="${!empty errors['newPasswordConfirm']}">
                                     <small class="form-text text-danger"><c:out
-                                            value="${errors['newPasswordConfirm']}" /></small>
+                                            value="${errors['newPasswordConfirm']}"/></small>
                                 </c:if>
                             </div>
                             <div class="form-group mt-2 text-center mt-4">
                                 <button class="btn btn-info w-75 fw-bold" type="submit"
-                                        aria-describedby="submitHelp">비밀번호 변경</button>
+                                        aria-describedby="submitHelp">비밀번호 변경
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -268,7 +274,8 @@
                         <div>
                             <div class="fs-5 fw-bold">비밀번호 재확인</div>
                             <div class="mt-2">정보를 안전하게 보호하기 위해 비밀번호를 다시 한 번
-                                확인합니다.</div>
+                                확인합니다.
+                            </div>
                             <div class="mt-3">
                                 <form action="/user/delete" method="post" class="d-flex">
                                     <sec:csrfInput/>
@@ -277,7 +284,8 @@
                                     </div>
                                     <div class="w-25 p-1">
                                         <div class="btn btn-outline-primary w-100"
-                                             data-bs-toggle="modal" data-bs-target="#deleteModal">확인</div>
+                                             data-bs-toggle="modal" data-bs-target="#deleteModal">확인
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -312,9 +320,11 @@
             </div>
             <div class="modal-footer">
                 <button id="workOn" type="button" class="btn btn-success"
-                        data-bs-dismiss="modal" onclick="workOn()">출근</button>
+                        data-bs-dismiss="modal" onclick="workOn()">출근
+                </button>
                 <button type="button" class="btn btn-danger"
-                        data-bs-dismiss="modal" onclick="cancelRadio()">취소</button>
+                        data-bs-dismiss="modal" onclick="cancelRadio()">취소
+                </button>
             </div>
         </div>
     </div>
@@ -324,21 +334,21 @@
      data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" id="workOnChecked">
-        	 <div class="modal-header">
-		        <h5 class="modal-title"></h5>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
             <div class="modal-body d-flex align-items-center">
-            	<div class="text-dark d-flex justify-content-center col-4">
+                <div class="text-dark d-flex justify-content-center col-4">
                     <i class="bi bi-megaphone" style="font-size: 100px;"></i>
                 </div>
                 <div class="m-2 text-wrap text-center col-8">
                     <h3 id="errorMessage"></h3>
-                 </div>
+                </div>
             </div>
-         </div>
-     </div>
- </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" id="workOnCommitModal" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true"
      data-bs-backdrop="static">
@@ -357,9 +367,11 @@
             </div>
             <div class="modal-footer">
                 <button id="workOnCommitBtn" type="button" class="btn btn-success"
-                        data-bs-dismiss="modal">출근</button>
+                        data-bs-dismiss="modal">출근
+                </button>
                 <button type="button" class="btn btn-danger"
-                        data-bs-dismiss="modal">취소</button>
+                        data-bs-dismiss="modal">취소
+                </button>
             </div>
         </div>
     </div>
@@ -385,9 +397,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-success"
-                        data-bs-dismiss="modal" onclick="workOff()">퇴근</button>
+                        data-bs-dismiss="modal" onclick="workOff()">퇴근
+                </button>
                 <button type="button" class="btn btn-danger"
-                        data-bs-dismiss="modal">취소</button>
+                        data-bs-dismiss="modal">취소
+                </button>
             </div>
         </div>
     </div>
@@ -408,9 +422,11 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-danger"
-                        data-bs-dismiss="modal">회원탈퇴</button>
+                        data-bs-dismiss="modal">회원탈퇴
+                </button>
                 <button type="button" class="btn btn-outline-secondary"
-                        data-bs-dismiss="modal">취소</button>
+                        data-bs-dismiss="modal">취소
+                </button>
             </div>
         </div>
     </div>
@@ -501,7 +517,7 @@
     });
 
     let tabInfo = $("#tab-info").val();
-    if(tabInfo === "profile") {
+    if (tabInfo === "profile") {
         $("#profile-li").attr("class", "active");
         $("#password-li").attr("class", "");
         $("#account-li").attr("class", "");
@@ -509,7 +525,7 @@
         $("#profile-tab").attr("class", "tab-pane fade active in");
         $("#password-tab").attr("class", "tab-pane fade");
         $("#account-tab").attr("class", "tab-pane fade");
-    } else if(tabInfo === "password") {
+    } else if (tabInfo === "password") {
         $("#profile-li").attr("class", "");
         $("#password-li").attr("class", "active");
         $("#account-li").attr("class", "");
@@ -517,7 +533,7 @@
         $("#profile-tab").attr("class", "tab-pane fade");
         $("#password-tab").attr("class", "tab-pane fade active in");
         $("#account-tab").attr("class", "tab-pane fade");
-    } else if(tabInfo === "account") {
+    } else if (tabInfo === "account") {
         $("#profile-li").attr("class", "");
         $("#password-li").attr("class", "");
         $("#account-li").attr("class", "active");
@@ -529,7 +545,7 @@
 
     let loginByEmailUrl = document.referrer;
 
-    if(loginByEmailUrl.includes("login-by-email")) {
+    if (loginByEmailUrl.includes("login-by-email")) {
         $("#profile-li").attr("class", "");
         $("#password-li").attr("class", "active");
         $("#account-li").attr("class", "");
@@ -551,35 +567,25 @@
         document.getElementById('current-time-finish').textContent = currentTime;
     }
 
-    function workOn() {
-    	let errorMessage = document.getElementById("errorMessage")
-        fetch("/user/commute/work_on_check/" + currentUserId)
-            .then(response => {
-            if (response.status === 200) {
-                return response.json()
-            } else {
-                throw new Error("Network response was not ok.");
-            }
-        })            	
-       		.then(data => {
-                if(data.status === 1){
-                	errorMessage.innerText = data.message;
-                    $("#commuteModalCheck").modal("show");
-                    populateCommuteTable();
-                }else{
-                	errorMessage.innerText = data.message;
-                    $("#commuteModalCheck").modal("show");
-                    populateCommuteTable()
-                }
-            })
-            .catch((error) => {
-                console.error("에러 발생:", error);
-                alert("출근 체크 중 오류가 발생하였습니다. 다시 시도해주세요.");
-            });
+    //날짜 형식 변경 함수
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return month + '-' + day;
     }
-    function workOff(){
+
+    //시간 형식 변경 함수
+    function formatTime(timeString) {
+        const time = new Date(timeString);
+        const hours = time.getHours().toString().padStart(2, '0');
+        const minutes = time.getMinutes().toString().padStart(2, '0');
+        return hours + ':' + minutes;
+    }
+
+    function workOn() {
         let errorMessage = document.getElementById("errorMessage")
-        fetch("/user/commute/work_off_check/"+ currentUserId)
+        fetch("/user/commute/work_on_check/" + currentUserId)
             .then(response => {
                 if (response.status === 200) {
                     return response.json()
@@ -588,12 +594,12 @@
                 }
             })
             .then(data => {
-                if(data.status === 1){
-                	errorMessage.innerText = data.message;
+                if (data.status === 1) {
+                    errorMessage.innerText = data.message;
                     $("#commuteModalCheck").modal("show");
-                    populateCommuteTable()
-                }else{
-                	errorMessage.innerText = data.message;
+                    populateCommuteTable();
+                } else {
+                    errorMessage.innerText = data.message;
                     $("#commuteModalCheck").modal("show");
                     populateCommuteTable()
                 }
@@ -603,8 +609,36 @@
                 alert("출근 체크 중 오류가 발생하였습니다. 다시 시도해주세요.");
             });
     }
+
+    function workOff() {
+        let errorMessage = document.getElementById("errorMessage")
+        fetch("/user/commute/work_off_check/" + currentUserId)
+            .then(response => {
+                if (response.status === 200) {
+                    return response.json()
+                } else {
+                    throw new Error("Network response was not ok.");
+                }
+            })
+            .then(data => {
+                if (data.status === 1) {
+                    errorMessage.innerText = data.message;
+                    $("#commuteModalCheck").modal("show");
+                    populateCommuteTable()
+                } else {
+                    errorMessage.innerText = data.message;
+                    $("#commuteModalCheck").modal("show");
+                    populateCommuteTable()
+                }
+            })
+            .catch((error) => {
+                console.error("에러 발생:", error);
+                alert("출근 체크 중 오류가 발생하였습니다. 다시 시도해주세요.");
+            });
+    }
+
     async function fetchJsonData() {
-        const url = 'http://localhost:8080/user/commute/check/'+currentUserId;
+        const url = 'http://localhost:8080/user/commute/check/' + currentUserId;
 
         try {
             const response = await fetch(url);
@@ -619,20 +653,27 @@
 
     function jsonToCsv(jsonData) {
         const csvRows = [];
-        const headers = ['userIdennum', 'userName', 'checkInTime', 'checkOutTime', 'status'];
-        const translatedHeaders = ['사원번호', '사원이름', '출근시간', '퇴근시간', '상태'];
+        const headers = ['userIdennum', 'userName', 'checkDate', 'checkInTime', 'checkOutTime', 'status'];
+        const translatedHeaders = ['사원번호', '사원이름', '출근날짜', '출근시간', '퇴근시간', '상태'];
         csvRows.push(translatedHeaders.join(','));
 
         for (const row of jsonData) {
             const values = headers.map(header => {
                 let value = row[header];
+                if (header === 'checkDate') {
+                    value = formatDate(value);
+                }
                 if (header === 'checkInTime' || header === 'checkOutTime') {
-                    formatTime(value); // Convert date-time strings to a more human-readable format
-                } else if (header === 'status') {
-                    // Replace "WORKON" and "WORKOFF" with "출근" and "퇴근" respectively
+                    if (value !== null && value !== undefined) { // null 및 undefined 체크
+                        console.log(value + " 넌 어느밸류");
+                        value = formatTime(value);
+                        console.log(value + " 넌 어느밸류바뀐");
+                    }
+                }
+                if (header === 'status') {
                     value = value === 'WORKON' ? '출근' : '퇴근';
                 }
-                return value.includes(',') ? "+value+" : value; // Enclose values containing commas in double quotes
+                return value !== null && value !== undefined ? '"' + value + '"' : value;
             });
             csvRows.push(values.join(','));
         }
@@ -651,7 +692,7 @@
         const csvData = jsonToCsv(jsonData);
         const utf8Bom = "\uFEFF";
         const csvContent = utf8Bom + csvData;
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
         const url = window.URL.createObjectURL(blob);
 
         const a = document.createElement('a');
@@ -663,6 +704,7 @@
 
         window.URL.revokeObjectURL(url);
     }
+
     //최근 5년의 select value 생성
     function populateYearAndMonthOptions() {
         const yearSelect = document.getElementById("yearSelect");
@@ -724,9 +766,12 @@
                     newRow.classList.add("d-flex", "mt-2", "p-2", "border-bottom", "border-dark");
                     const formattedDate = formatDate(commuteData.checkDate);
                     const formattedCheckInTime = formatTime(commuteData.checkInTime);
-                    let formattedCheckOutTime = formatTime(commuteData.checkOutTime);
-                    if (formattedCheckOutTime === null){
-                        formattedCheckOutTime = "--"
+                    let formattedCheckOutTime;
+                    if (commuteData.checkOutTime === null) {
+                        console.log(commuteData.checkOutTime);
+                        formattedCheckOutTime = "퇴근 전";
+                    } else {
+                        formattedCheckOutTime = formatTime(commuteData.checkOutTime);
                     }
                     console.log(formattedCheckOutTime)
                     newRow.innerHTML =
@@ -743,36 +788,25 @@
             });
     }
 
-    // Function to format the date as "MM-DD" (e.g., "08-04")
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        const day = date.getDate().toString().padStart(2, '0');
-        return month + '-' + day;
-    }
-
-    // Function to format the time as "HH:mm" (e.g., "11:28")
-    function formatTime(timeString) {
-        const time = new Date(timeString);
-        const hours = time.getHours().toString().padStart(2, '0');
-        const minutes = time.getMinutes().toString().padStart(2, '0');
-        return hours + ':' + minutes;
-    }
-
-    // Example function to calculate work hours (you can modify this based on your requirements)
+    //출근 시간과 퇴근 시간의 차이를 계산하는 함수
     function calculateWorkHours(checkInTime, checkOutTime) {
-        const checkIn = new Date(checkInTime);
-        const checkOut = new Date(checkOutTime);
-        const diffInMilliseconds = checkOut - checkIn;
-        const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
-        const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+        if (checkOutTime === null) {
+            return "퇴근 전";
+        } else {
+            const checkIn = new Date(checkInTime);
+            const checkOut = new Date(checkOutTime);
+            const diffInMilliseconds = checkOut - checkIn;
+            const hours = Math.floor(diffInMilliseconds / (1000 * 60 * 60));
+            const minutes = Math.floor((diffInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
 
-        // Format hours and minutes to 2 digits with leading zeros
-        const formattedHours = hours.toString().padStart(2, '0');
-        const formattedMinutes = minutes.toString().padStart(2, '0');
+            // 시간이 0시간 0분이면 null을 반환
+            const formattedHours = hours.toString().padStart(2, '0');
+            const formattedMinutes = minutes.toString().padStart(2, '0');
 
-        return formattedHours + ":" + formattedMinutes;
+            return formattedHours + ":" + formattedMinutes;
+        }
     }
+
     populateYearAndMonthOptions();
 
 
@@ -790,20 +824,20 @@
 
     function execDaumPostcode() {
         new daum.Postcode({
-            oncomplete: function(data) {
+            oncomplete: function (data) {
 
 
                 var roadAddr = data.roadAddress; // 도로명 주소 변수
                 var extraRoadAddr = ''; // 참고 항목 변수
 
-                if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
                     extraRoadAddr += data.bname;
                 }
 
-                if(data.buildingName !== '' && data.apartment === 'Y'){
+                if (data.buildingName !== '' && data.apartment === 'Y') {
                     extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
                 }
-                if(extraRoadAddr !== ''){
+                if (extraRoadAddr !== '') {
                     extraRoadAddr = ' (' + extraRoadAddr + ')';
                 }
 
@@ -813,19 +847,19 @@
 
                 document.getElementById("engAddress").value = data.addressEnglish;
 
-                if(roadAddr !== ''){
+                if (roadAddr !== '') {
                     document.getElementById("extraAddress").value = extraRoadAddr;
                 } else {
                     document.getElementById("extraAddress").value = '';
                 }
 
                 var guideTextBox = document.getElementById("guide");
-                if(data.autoRoadAddress) {
+                if (data.autoRoadAddress) {
                     var expRoadAddr = data.autoRoadAddress + extraRoadAddr;
                     guideTextBox.innerHTML = '(예상 도로명 주소 : ' + expRoadAddr + ')';
                     guideTextBox.style.display = 'block';
 
-                } else if(data.autoJibunAddress) {
+                } else if (data.autoJibunAddress) {
                     var expJibunAddr = data.autoJibunAddress;
                     guideTextBox.innerHTML = '(예상 지번 주소 : ' + expJibunAddr + ')';
                     guideTextBox.style.display = 'block';
@@ -840,5 +874,5 @@
 
 </script>
 </body>
-<%@ include file="../common/footer.jsp"%>
+<%@ include file="../common/footer.jsp" %>
 </html>

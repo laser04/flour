@@ -21,7 +21,7 @@
             sender_id as senderId,
             recipient_id as recipientId,
             sender_name as senderName,
-            recipient_name recipientName,
+            recipient_name as recipientName,
             content,
             timestamp,
             status

@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers("/api/*", "/check_email", "/chat/*", "/messages/*").authenticated()
+                .mvcMatchers("/check_email", "/chat/*", "/messages/*").authenticated()
                 .mvcMatchers("/user/**").authenticated()
                 .anyRequest().permitAll();
         http.formLogin()

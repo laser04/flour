@@ -44,8 +44,6 @@ public class UserProfileController {
     @GetMapping(USER_UPDATE_URL)
     public String userProfileForm(@CurrentUser Users users, Model model) {
         model.addAttribute(users);
-        //model.addAttribute(new UserProfileForm(user));
-        //model.addAttribute(modelMapper.map(user, UserProfileForm.class)); ModelMapper사용시
         return USER_UPDATE_VIEW_NAME;
     }
 
@@ -64,7 +62,6 @@ public class UserProfileController {
             return USER_UPDATE_VIEW_NAME;
         }
         userService.updateUserProfile(users, userProfileForm);
-        // model.addAttribute("user",updatedUser);
         attributes.addFlashAttribute("tabInfo","profile");
         attributes.addFlashAttribute("message", "프로필을 수정했습니다.");
 

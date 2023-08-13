@@ -41,7 +41,7 @@ public class Users {
     }
 
     public boolean isValidToken(String token) {
-        return this.userEmailCheckToken.equals(token);
+        return !this.userEmailCheckToken.equals(token);
     }
 
     public boolean canSendConfirmEmail() {

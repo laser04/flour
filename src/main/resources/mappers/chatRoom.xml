@@ -11,9 +11,10 @@
     </resultMap>
 
     <select id="findBySenderIdAndRecipientId" resultMap="ChatRoomMap">
-        SELECT * FROM chatroom
-        WHERE sender_id = #{senderId} AND recipient_id = #{recipientId}
-            LIMIT 1
+        SELECT *
+        FROM chatroom
+        WHERE sender_id = #{senderId}
+          AND recipient_id = #{recipientId} LIMIT 1
     </select>
 
     <insert id="save" parameterType="com.flour.web.domain.ChatRoom">

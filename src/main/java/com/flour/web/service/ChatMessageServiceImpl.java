@@ -16,7 +16,7 @@ import java.util.UUID;
 @Service
 public class ChatMessageServiceImpl {
     @Autowired private ChatMessageMapper chatMessageMapper;
-    @Autowired private ChatRoomService chatRoomService;
+    @Autowired private ChatRoomServiceImpl chatRoomServiceImpl;
 
     public ChatMessage newMessage(ChatMessage chatMessage) {
         chatMessage.setId(generateRandomMessageId());
@@ -38,7 +38,7 @@ public class ChatMessageServiceImpl {
                 senderId, recipientId, MessageStatus.RECEIVED);
     }
     public List<ChatMessage> findChatMessages(String senderId, String recipientId) {
-        var chatId = chatRoomService.getChatId(senderId, recipientId, false);
+        var chatId = chatRoomServiceImpl.getChatId(senderId, recipientId, false);
         var messages =
                 chatId.map(cId -> chatMessageMapper.findByChatId(cId)).orElse(new ArrayList<>());
         System.out.println(messages);
@@ -58,7 +58,7 @@ public class ChatMessageServiceImpl {
             chatMessageMapper.updateStatuses(chatMessage.getSenderId(), chatMessage.getRecipientId(), MessageStatus.DELIVERED);
             return chatMessage;
         } else {
-            throw new ResourceNotFoundException("can't find message (" + id + ")");
+            throw new ResourceNotFoundException("메시지를 찾을수 없습니다 (" + id + ")");
         }
     }
 

@@ -38,37 +38,39 @@ public class UserJoinController {
     @PostMapping("/join")
     public String signUpSubmit(@Valid joinForm joinForm, Errors errors, Model model) { // @ModelAttribute 복합(여러값)들을 가진 객체를 받을 때 사용을 하지만 파라미터 가 없어도 되기 때문에 생략이 가능하다.
         System.out.println(joinForm);
-        if(errors.hasErrors()) {
+        if (errors.hasErrors()) {
             System.out.println(errors);
-            Map<String,String> map = new HashMap<>();
-            for(FieldError error :errors.getFieldErrors()) {
-                map.put(error.getField() , error.getDefaultMessage());
+            Map<String, String> map = new HashMap<>();
+            for (FieldError error : errors.getFieldErrors()) {
+                map.put(error.getField(), error.getDefaultMessage());
             }
-            model.addAttribute("errors",map);
+            model.addAttribute("errors", map);
             return "/user/join";
         }
         Users users = userService.processNewUser(joinForm);
         userService.login(users);
         return "redirect:/";
     }
+
     @GetMapping("/mail_check")
-    public ResponseEntity<String> mailcheck(String email){
-        if (userService.existByEmail(email)){
+    public ResponseEntity<String> mailcheck(String email) {
+        if (userService.existByEmail(email)) {
             return ResponseEntity.ok("작성하신 이메일은 이미 존재합니다.");
-        } else{
+        } else {
             return ResponseEntity.ok("중복된 이메일이 없습니다.");
         }
     }
+
     @GetMapping("/check_email")
     public String checkEmail(@CurrentUser Users users, Model model) {
         model.addAttribute("email", users.getUserEmail());
         return "/user/check_email";
     }
 
-    // 이메일인증을 악위적으로 하는 것을 막기 위함
+    // 이메일인증을 악의적 동작 막기 위함
     @GetMapping("/resend-confirm-email")
     public String resendConfirmEmail(@CurrentUser Users users, Model model) {
-        if(!users.canSendConfirmEmail()) {
+        if (!users.canSendConfirmEmail()) {
             model.addAttribute("error", "인증 이메일은 1시간에 한번만 전송할 수 있습니다.");
             model.addAttribute("email", users.getUserEmail());
             return "/user/check_email";
@@ -87,7 +89,7 @@ public class UserJoinController {
             return view;
         }
 
-        if(!users.isValidToken(token)) {
+        if (users.isValidToken(token)) {
             model.addAttribute("error", "wrong.token");
             return view;
         }
@@ -102,7 +104,7 @@ public class UserJoinController {
     public String loginById(String token, String userId, Model model) {
         Users users = userService.findByIdennum(userId);
         String view = "/user/logged_in_by_Id";
-        if(users == null || !users.isValidToken(token)) {
+        if (users == null || users.isValidToken(token)) {
             model.addAttribute("error", "로그인할 수 없습니다.");
             return view;
         }

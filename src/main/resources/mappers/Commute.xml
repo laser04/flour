@@ -24,7 +24,8 @@
             users.user_name AS userName,
             commute.check_date AS checkDate,
             commute.check_in_time AS checkInTime,
-            commute.check_out_time AS checkOutTime
+            commute.check_out_time AS checkOutTime,
+            commute.status AS status
         FROM
             commute
                 INNER JOIN users ON users.user_idennum = commute.user_idennum

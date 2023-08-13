@@ -3,87 +3,88 @@
 <mapper namespace="com.flour.web.mapper.UserMapper">
 
     <insert id="insertUser" parameterType="com.flour.web.domain.Users">
-        insert into users (user_id, user_idennum, user_password, user_gender, user_email, department_id, user_phone, user_photo, user_name, user_address_postnum, user_address_basic, user_address_detail, user_email_token, user_email_verified, user_email_token_generated_date)
-        values (#{userId}, #{userIdennum}, #{userPassword}, #{userGender}, #{userEmail}, #{departmentName}, #{userPhone}, #{userPhoto}, #{userName}, #{userAddressPostnum}, #{userAddressBasic}, #{userAddressDetail}, #{userEmailCheckToken}, #{userEmailVerified}, #{userEmailCheckTokenGeneratedAt})
+        insert into users (user_id, user_idennum, user_password, user_gender, user_email, department_id, user_phone,
+                           user_photo, user_name, user_address_postnum, user_address_basic, user_address_detail,
+                           user_email_token, user_email_verified, user_email_token_generated_date)
+        values (#{userId}, #{userIdennum}, #{userPassword}, #{userGender}, #{userEmail}, #{departmentName},
+                #{userPhone}, #{userPhoto}, #{userName}, #{userAddressPostnum}, #{userAddressBasic},
+                #{userAddressDetail}, #{userEmailCheckToken}, #{userEmailVerified}, #{userEmailCheckTokenGeneratedAt})
     </insert>
 
     <select id="existByEmail" parameterType="string" resultType="boolean">
-        select
-               case when exists(
-                           SELECT 1
-                           FROM users
-                           WHERE user_email = #{email}
-               		   )
-			   then 'true'
-			   else 'false'
-			   end
+        select case
+                   when exists(SELECT 1
+                               FROM users
+                               WHERE user_email = #{email})
+                       then 'true'
+                   else 'false'
+                   end
     </select>
 
     <select id="existByIdennum" parameterType="string" resultType="boolean">
-		select
-			case when exists(
-					SELECT 1
-					FROM users
-					WHERE user_idennum = #{userIdennum}
-				)
-					 then 'true'
-				 else 'false'
-				end
+        select case
+                   when exists(SELECT 1
+                               FROM users
+                               WHERE user_idennum = #{userIdennum})
+                       then 'true'
+                   else 'false'
+                   end
     </select>
 
     <select id="findByIdennum" parameterType="string" resultType="com.flour.web.domain.Users">
-        SELECT
-            user_id AS userId,
-            user_idennum AS userIdennum,
-            user_password AS userPassword,
-            user_gender AS userGender,
-            user_email AS userEmail,
-            department.department_name AS departmentName,
-            user_phone AS userPhone,
-            user_photo AS userPhoto,
-            user_position as userPosition,
-            user_role AS userRole,
-            user_name AS userName,
-            user_address_postnum AS userAddressPostnum,
-            user_address_basic AS userAddressBasic,
-            user_address_detail AS userAddressDetail,
-            user_createddate AS userCreatedDate,
-            user_moddate AS userModDate,
-            user_email_token AS userEmailCheckToken,
-            user_email_verified AS userEmailVerified,
-            user_email_token_generated_date AS userEmailCheckTokenGeneratedAt
+        SELECT user_id                         AS userId,
+               user_idennum                    AS userIdennum,
+               user_password                   AS userPassword,
+               user_gender                     AS userGender,
+               user_email                      AS userEmail,
+               department.department_name      AS departmentName,
+               user_phone                      AS userPhone,
+               user_photo                      AS userPhoto,
+               user_position                   as userPosition,
+               user_role                       AS userRole,
+               user_name                       AS userName,
+               user_address_postnum            AS userAddressPostnum,
+               user_address_basic              AS userAddressBasic,
+               user_address_detail             AS userAddressDetail,
+               user_createddate                AS userCreatedDate,
+               user_moddate                    AS userModDate,
+               user_email_token                AS userEmailCheckToken,
+               user_email_verified             AS userEmailVerified,
+               user_email_token_generated_date AS userEmailCheckTokenGeneratedAt
         FROM users
                  INNER JOIN department ON users.department_id = department.department_id
         WHERE user_idennum = #{value}
     </select>
 
     <select id="findAll" resultType="com.flour.web.domain.Users">
-        SELECT user_idennum AS userIdennum,
-               user_name AS userName,
+        SELECT user_idennum               AS userIdennum,
+               user_name                  AS userName,
                department.department_name AS departmentName,
-               user_photo AS userPhoto
-        from users inner join department on users.department_id = department.department_id
+               user_photo                 AS userPhoto
+        from users
+                 inner join department on users.department_id = department.department_id
         order by department_name desc
     </select>
     <select id="findAllDetail" resultType="com.flour.web.domain.Users">
-        SELECT user_idennum AS userIdennum,
-               user_gender AS userGender,
-               user_email AS userEmail,
+        SELECT user_idennum               AS userIdennum,
+               user_gender                AS userGender,
+               user_email                 AS userEmail,
                department.department_name AS departmentName,
-               users.DEPARTMENT_ID as departmentId,
-               user_position as userPosition,
-               user_name AS userName,
-               user_createddate AS userCreatedDate,
-               user_phone as userPhone,
-               user_position as userPosition,
-               user_address_basic as userAddressBasic,
-               user_address_detail as userAddressDetail
-        FROM users inner join department on users.department_id = department.department_id
+               users.DEPARTMENT_ID        as departmentId,
+               user_position              as userPosition,
+               user_name                  AS userName,
+               user_createddate           AS userCreatedDate,
+               user_phone                 as userPhone,
+               user_position              as userPosition,
+               user_address_basic         as userAddressBasic,
+               user_address_detail        as userAddressDetail
+        FROM users
+                 inner join department on users.department_id = department.department_id
     </select>
     <select id="findDepartmentAll" resultType="com.flour.web.domain.Users">
-        SELECT department_id as departmentId,
+        SELECT department_id   as departmentId,
                department_name as departmentName
-            from department
+        from department
     </select>
 
     <select id="countAllUser" resultType="int">
@@ -93,45 +94,40 @@
     <update id="updateEmailVerified" parameterType="com.flour.web.domain.Users">
         update
             users
-        set
-            user_email_verified = #{userEmailVerified}
+        set user_email_verified = #{userEmailVerified}
         where user_email = #{userEmail}
     </update>
 
     <update id="updateEmailCheckTokenWithTime" parameterType="com.flour.web.domain.Users">
         update
             users
-        set
-            user_email_token_generated_date = #{userEmailCheckTokenGeneratedAt},
-            user_email_token = #{userEmailCheckToken}
-        where
-            user_email = #{userEmail}
+        set user_email_token_generated_date = #{userEmailCheckTokenGeneratedAt},
+            user_email_token                = #{userEmailCheckToken}
+        where user_email = #{userEmail}
     </update>
 
     <update id="updateUserProfile" parameterType="com.flour.web.domain.Users">
         update
             users
-        set
-            user_email = #{userEmail},
-            user_phone = #{userPhone},
-            user_photo = #{userPhoto},
+        set user_email           = #{userEmail},
+            user_phone           = #{userPhone},
+            user_photo           = #{userPhoto},
             user_address_postnum = #{userAddressPostnum},
-            user_address_basic = #{userAddressBasic},
-            user_address_detail = #{userAddressDetail}
-        where
-            user_idennum = #{userIdennum}
+            user_address_basic   = #{userAddressBasic},
+            user_address_detail  = #{userAddressDetail}
+        where user_idennum = #{userIdennum}
     </update>
 
     <update id="updateUserPassword" parameterType="com.flour.web.domain.Users">
         update
             users
-        set
-            user_password = #{userPassword}
-        where
-            user_idennum = #{userIdennum}
+        set user_password = #{userPassword}
+        where user_idennum = #{userIdennum}
     </update>
 
     <delete id="deleteByIdennum" parameterType="string">
-        delete from USER where user_idennum = #{value}
+        delete
+        from USER
+        where user_idennum = #{value}
     </delete>
 </mapper>

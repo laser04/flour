@@ -13,11 +13,14 @@ public interface UserService {
 
     Users findByIdennum(String userIdennum);
 
-    public boolean existByEmail(String email);
+    boolean existByEmail(String email);
+
     List<Users> listAll();
+
     List<Users> listAllDetail();
 
     List<Users> listDepartment();
+
     int CountAllUser();
 
     void updateEmailVerified(Users users);

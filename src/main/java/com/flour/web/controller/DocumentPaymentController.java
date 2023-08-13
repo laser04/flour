@@ -31,10 +31,10 @@ public class DocumentPaymentController {
 		DocumentPayment userInfodto=
 				documentpaymentservice.userInfo(users.getUserIdennum());
 
-		//휴가신청서 모든 정보들
+		//휴가 신청서 모든 정보들
 		ArrayList<DocumentPayment> holidayList
 				=(ArrayList<DocumentPayment>)documentpaymentservice.holidayList();
-		//업무보고서 모든 정보들
+		//업무 보고서 모든 정보들
 		ArrayList<DocumentPayment> taskreportList
 				=(ArrayList<DocumentPayment>)documentpaymentservice.taskreportList();		
 		//사직서 모든 정보들

@@ -23,9 +23,10 @@ public class CommuteController {
 
     private final CommuteService commuteService;
     Map<String, Object> response = new HashMap<>();
+
     @GetMapping("/user/commute/work_on_check/{userIdennum}")
     public ResponseEntity<Map<String, Object>> checkWorkOn(@PathVariable String userIdennum, @CurrentUser Users users) {
-        if(userIdennum.equals(users.getUserIdennum())) {
+        if (userIdennum.equals(users.getUserIdennum())) {
             boolean isWorkOn = commuteService.workOn(userIdennum);
             if (isWorkOn) {
                 response.put("status", 0);
@@ -34,39 +35,41 @@ public class CommuteController {
                 response.put("status", 1);
                 response.put("message", "이미 출근 처리 되어있습니다.");
             }
-        }else{
+        } else {
             response.put("message", "정상적인 접근이 아닙니다.");
         }
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/user/commute/work_off_check/{userIdennum}")
-    public ResponseEntity<Map<String, Object>> workoff(@PathVariable String userIdennum, @CurrentUser Users users){
-        if(userIdennum.equals(users.getUserIdennum())) {
+    public ResponseEntity<Map<String, Object>> workoff(@PathVariable String userIdennum, @CurrentUser Users users) {
+        if (userIdennum.equals(users.getUserIdennum())) {
             boolean isWorkOn = commuteService.checkWorkOn(userIdennum);
             if (isWorkOn) {
                 boolean isWorkOff = commuteService.workOff(userIdennum);
-                if(isWorkOff){
+                if (isWorkOff) {
                     response.put("status", 0);
                     response.put("message", "퇴근 처리가 완료되었습니다.");
-                }else{
+                } else {
                     response.put("status", 1);
                     response.put("message", "이미 퇴근 처리 되어있습니다.");
                 }
             } else {
                 response.put("status", -1);
-                response.put("message", "출근부터 하셈.");
+                response.put("message", "출근하지 않았습니다.");
             }
             return ResponseEntity.ok(response);
-        }else{
+        } else {
             response.put("message", "정상적인 접근이 아닙니다.");
             return ResponseEntity.ok(response);
         }
     }
+
     @GetMapping("/user/commute/check/{userIdennum}")
-    public ResponseEntity<?> commuteCheck(@PathVariable String userIdennum, @CurrentUser Users users){
-        if(userIdennum.equals(users.getUserIdennum())) {
+    public ResponseEntity<?> commuteCheck(@PathVariable String userIdennum, @CurrentUser Users users) {
+        if (userIdennum.equals(users.getUserIdennum())) {
             return ResponseEntity.ok(commuteService.commuteCheck(userIdennum));
-        }else{
+        } else {
             response.put("message", "정상적인 접근이 아닙니다.");
             return ResponseEntity.ok(response);
         }
