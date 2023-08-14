@@ -4,8 +4,7 @@ import com.flour.web.domain.ChatMessage;
 import com.flour.web.domain.ChatNotification;
 import com.flour.web.service.ChatMessageServiceImpl;
 import com.flour.web.service.ChatRoomService;
-import com.flour.web.service.ChatRoomServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,14 +15,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
+@RequiredArgsConstructor
 public class ChatController {
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    @Autowired
-    private ChatMessageServiceImpl chatMessageService;
-    @Autowired
-    private ChatRoomService chatRoomService;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final ChatMessageServiceImpl chatMessageService;
+    private final ChatRoomService chatRoomService;
 
     //채팅 메시지 보내기(MessageMapping)
     @MessageMapping("/chat")
